@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "Teddy Zap",
+  "version": "0.0.1",
+  "description": "Extensão da Black Teddy",
+  "author": "Marcus Vinicius Soares Nascimento",
+  "permissions": [
+    "activeTab"
+  ],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  "action": {
+    "default_title": "Ir para o Dashboard",
+    "default_popup": "index.html"
+  }
+}

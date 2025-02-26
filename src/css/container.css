@@ -1,0 +1,40 @@
+/* Área de conteúdo */
+.content-area {
+    margin-left: 310px; /* Espaço para o sidebar */
+    padding: 110px;
+  }
+  
+  /* Filtro e botão */
+  #filterAndAdd {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .hidden {
+    display: none;
+  }
+  
+  input#filterInput {
+    padding: 5px;
+    font-size: 16px;
+    width: 500px;
+    border-radius: 20px;
+    background-color: #042074;
+  }
+  
+  button#addButton {
+    padding: 10px 20px;
+    background-color: #042074;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    border-radius: 20px;
+
+  }
+  
+  button#addButton:hover {
+    background-color: #042074;
+  }
