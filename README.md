@@ -1,1 +1,1 @@
-# WhasApp-Extension
+# WhatsApp-Extension
