@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ir para o Dashboard</title>
+  <link rel="stylesheet" href="src/css/style.css">
+
+<script>
+  const Key = "Teste";
+
+  accessKey = document.getElementById("accessKey").value;
+
+  if (accessKey == Key) {
+      window.location.href = "Key.html"; 
+        }
+</script>
+
+
+<script src="Key.js"></script>
+
+</head>
+
+<body>
+  <button id="goToDashboardBtn">
+    Ir para Dashboard
+  </button>
+
+  <button id="goToFormularioBtn">
+    Ir para Requisição
+  </button>
+
+  <button id="goToSideBarBtn">
+    Ir para SideBar
+  </button>
+
+  <script src="popup.js" defer></script>
+</body>
+
+</html>

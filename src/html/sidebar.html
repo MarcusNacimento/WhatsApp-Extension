@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teddy Zap</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet">
+    <link rel="stylesheet" href="sidebar.css">
+    <link rel="stylesheet" href="container.css">
+    <!-- <link rel="stylesheet" href="modal.css"> -->
+
+
+</head>
+
+<body>
+    <aside class="sidebar">
+        <header class="sidebar-header">
+            <a href="#" class="header-logo">
+                <img src="img/logo.png" alt="BlackTeddy" style="width: 30px; height: auto;">
+            </a>
+        </header>
+
+        <nav class="sidebar-nav">
+            <ul class="nav-list primary-nav">
+                <li class="nav-item">
+                    <a href="# " class="nav-link" id="homeButton">
+                        <span class="nav-icon material-symbols-rounded"
+                            style="color:white; font-size: 35px; ">Home</span>
+                        <span class="nav-label" style="color:white; font-size: 20px; ">Início</span>
+                    </a>
+                    <span class="nav-tooltip">Início</span>
+                </li>
+                <li class="nav-item">
+                    <a href="# " class="nav-link" id="chatButton">
+                        <span class="nav-icon material-symbols-rounded"
+                            style="color:yellowgreen; font-size: 35px;margin-top: 15px; ">chat</span>
+                        <span class="nav-label"
+                            style="color:yellowgreen; font-size: 20px; margin-top: 15px;">Mensagens</span>
+                    </a>
+                    <span class="nav-tooltip">Mensagens</span>
+                </li>
+                <li class="nav-item">
+                    <a href="# " class="nav-link" id="audioButton">
+                        <span class="nav-icon material-symbols-rounded"
+                            style="color:orange; font-size: 35px; margin-top: 15px;">Mic</span>
+                        <span class="nav-label" style="color:orange; font-size: 20px;  margin-top: 15px;">Áudios</span>
+                    </a>
+                    <span class="nav-tooltip">Áudios</span>
+                </li>
+                <li class="nav-item">
+                    <a href="# " class="nav-link" id="mediaButton">
+                        <span class="nav-icon material-symbols-rounded"
+                            style="color:aqua; font-size: 35px; ; margin-top: 15px;">Gallery_thumbnail</span>
+                        <span class="nav-label" style="color:aqua; font-size: 20px;  margin-top: 15px;">Mídias</span>
+                    </a>
+                    <span class="nav-tooltip">Mídias</span>
+                </li>
+                <li class="nav-item">
+                    <a href="# " class="nav-link" id="documentsButton">
+                        <span class="nav-icon material-symbols-rounded"
+                            style="color:yellow ; font-size: 35px; margin-top: 15px;">Folder</span>
+                        <span class="nav-label"
+                            style="color:yellow ; font-size: 20px;  margin-top: 15px;">Documentos</span>
+                    </a>
+                    <span class="nav-tooltip">Documentos</span>
+                </li>
+                <li class="nav-item">
+                    <a href="# " class="nav-link" id="funnelsButton">
+                        <span class="nav-icon material-symbols-rounded"
+                            style="color:purple ; font-size: 35px; margin-top: 15px;"> Filter_alt</span>
+                        <span class="nav-label" style="color:purple ; font-size: 20px;  margin-top: 15px;"> Funis</span>
+                    </a>
+                    <span class="nav-tooltip">Funis</span>
+                </li>
+                <li class="nav-item">
+                    <a href="# " class="nav-link" id="triggersButton">
+                        <span class="nav-icon material-symbols-rounded"
+                            style="color:red ; font-size: 35px;  margin-top: 15px;"> Sync</span>
+                        <span class="nav-label" style="color:red ; font-size: 20px;  margin-top: 15px;">Gatilhos</span>
+                    </a>
+                    <span class="nav-tooltip">Gatilhos</span>
+                </li>
+
+            </ul>
+            <ul class="nav-list secondary-nav">
+                <li class="nav-item">
+                    <a href="# " class="nav-link">
+                        <span class="nav-icon material-symbols-rounded">settings</span>
+                        <span class="nav-label">Settings</span>
+                    </a>
+                    <span class="nav-tooltip">Settings</span>
+                </li>
+                <li class="nav-item">
+                    <a href="# " class="nav-link">
+                        <span class="nav-icon material-symbols-rounded">account_circle</span>
+                        <span class="nav-label">Profile</span>
+                    </a>
+                    <span class="nav-tooltip">Profile</span>
+                </li>
+                <li class="nav-item">
+                    <a href="# " class="nav-link">
+                        <span class="nav-icon material-symbols-rounded">logout</span>
+                        <span class="nav-label">Logout</span>
+                    </a>
+                    <span class="nav-tooltip">Logout</span>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+    <header class="header">
+        <div class="user-info">
+            <span id="username">Olá, Usuário!</span>
+            <span id="cellnumber">55999686600</span>
+            <img src="img/user-avatar.png" alt="Usuário" class="user-avatar">
+        </div>
+        
+    </header>
+
+    <div id="contentArea" class="content-area">
+        <div id="filterAndAdd" class="hidden">
+            <input type="text" id="filterInput" placeholder="Digite para buscar...">
+            <!-- Botões de Adicionar -->
+            <button id="chatButtonAddButton" class="hidden">Adicionar nas Mensagens</button>
+            <button id="audioButtonAddButton" class="hidden">Adicionar nos Áudios</button>
+            <button id="mediaButtonAddButton" class="hidden">Adicionar nas Mídias</button>
+            <button id="documentsButtonAddButton" class="hidden">Adicionar nos Documentos</button>
+            <button id="funnelsButtonAddButton" class="hidden">Adicionar nos Funis</button>
+            <button id="triggersButtonAddButton" class="hidden">Adicionar nos Gatilhos</button>
+        </div>
+    </div>
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Adicionar/Editar Item</h2>
+            <form id="addForm">
+                <input type="text" id="nameInput" placeholder="Digite o nome..." required>
+                <div class="modal-buttons">
+                    <button type="submit" class="save-btn">Salvar</button>
+                    <button type="button" id="closeModal" class="close-btn">Fechar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <ul id="itemList"></ul>
+
+
+    <div class="container">
+        <div class="item">Olá</div>
+        <div class="item" type="text" style="font-size: 18px;">Total de itens cadastrados</div>
+        <div class="item">
+            <span class="nav-icon material-symbols-rounded" style="color:yellowgreen; padding-top: 5px; ">chat</span>
+            <span class="item-label" style="color:yellowgreen ; ">Mensagens</span>
+            <span class="item-count" id="count-chat" >0</span> <!-- Contador -->
+
+        </div>
+        <div class="item">
+            <span class="nav-icon material-symbols-rounded" style="color:orange; padding-top: 5px; ">Mic</span>
+            <span class="item-label" style="color:orange ; ">Áudios</span>
+            <span class="item-count" id="count-audio" >0</span> <!-- Contador -->
+
+        </div>
+        <div class="item">
+            <span class="nav-icon material-symbols-rounded"
+                style="color:aqua; padding-top: 5px; ">Gallery_thumbnail</span>
+            <span class="item-label" style="color:aqua ;">Mídias</span>
+            <span class="item-count" id="count-media" >0</span> <!-- Contador -->
+
+        </div>
+        <div class="item">
+            <span class="nav-icon material-symbols-rounded" style="color:yellow; padding-top: 5px; ">Folder</span>
+            <span class="item-label" style="color:yellow ;">Documentos</span>
+            <span class="item-count" id="count-documents" >0</span> <!-- Contador -->
+
+        </div>
+        <div class="item">
+            <span class="nav-icon material-symbols-rounded" style="color:purple; padding-top: 5px; ">Filter_alt</span>
+            <span class="item-label" style="color:purple ;">Funis</span>
+            <span class="item-count" id="count-funnels" >0</span> <!-- Contador -->
+
+
+        </div>
+        <div class="item">
+            <span class="nav-icon material-symbols-rounded" style="color:red; padding-top: 5px; ">sync</span>
+            <span class="item-label" style="color:red ; ">Gatilhos</span>
+            <span class="item-count" id="count-triggers">0</span> <!-- Contador -->
+        </div>
+
+        <script src="sidebar.js"></script>
+        <script src="Key.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teste com OnClick</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    form {
+      max-width: 300px;
+      margin: 0 auto;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h2>Requisições</h2>
+  <form id="requestForm">
+    <label for="numberInput">Número:</label>
+    <input type="text" id="numero" name="numberInput" placeholder="Digite um número..." required>
+
+    <label for="textInput">Texto:</label>
+    <input type="text" id="texto" name="textInput" placeholder="Digite a sua mensagem" required>
+
+    <button type="button" id="submitButton">Enviar</button>
+  </form>
+
+  <script src="requisicao.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Acesso</title>
+    <link rel="stylesheet" href="Key.css">
+</head>
+
+<body>
+    <div id="loginContainer">
+        <input type="password" id="accessKey" placeholder="Digite sua chave de acesso">
+        <button id="loginButton">Entrar</button>
+    </div>
+    <script>
+        const Key = "Teste";
+
+        accessKey = document.getElementById("accessKey").value;
+
+
+        
+        if (accessKey == Key) {
+            window.location.href = "sidebar.html";
+        }
+
+    </script>
+</body>
+
+</html>
