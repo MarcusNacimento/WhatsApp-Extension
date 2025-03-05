@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Acesso</title>
-    <link rel="stylesheet" href="Key.css">
+    <link rel="stylesheet" href="../css/Key.css">
 </head>
 
 <body>
@@ -13,17 +13,22 @@
         <input type="password" id="accessKey" placeholder="Digite sua chave de acesso">
         <button id="loginButton">Entrar</button>
     </div>
+
     <script>
-        const Key = "Teste";
+        document.addEventListener("DOMContentLoaded", function () {
+            const Key = "Teste";
+            const loginButton = document.getElementById("loginButton");
 
-        accessKey = document.getElementById("accessKey").value;
-
-
-        
-        if (accessKey == Key) {
-            window.location.href = "sidebar.html";
-        }
-
+            loginButton.addEventListener("click", function () {
+                const accessKey = document.getElementById("accessKey").value;
+                
+                if (accessKey === Key) {
+                    window.location.href = "../html/sidebar.html"; // ✅ Caminho corrigido
+                } else {
+                    alert("Chave de acesso incorreta!"); // 🔥 Mensagem de erro para feedback
+                }
+            });
+        });
     </script>
 </body>
 

@@ -385,6 +385,10 @@ body {
   color: white;
 }
 
+.hidden {
+  display: none;
+}
+
 #itemList {
   display: flex;
   flex-direction: column;

@@ -13,6 +13,6 @@
   ],
   "action": {
     "default_title": "Ir para o Dashboard",
-    "default_popup": "index.html"
+    "default_popup": "src/html/index.html"
   }
 }

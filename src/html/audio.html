@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Áudios</title>
+    <link rel="stylesheet" href="../css/audio.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Gerenciar Áudios 🎵</h2>
+        <button id="openAudioModal">Adicionar Áudio</button>
+        
+        <!-- Modal para Upload de Áudio -->
+        <div id="audioModal" class="modal hidden">
+            <div class="modal-content">
+                <h3>Adicionar um Áudio</h3>
+                <input type="file" id="audioInput" accept="audio/*">
+                <button id="uploadAudio">Enviar Áudio</button>
+                <button id="closeAudioModal">Fechar</button>
+            </div>
+        </div>
+
+        <h3>Lista de Áudios</h3>
+        <ul id="audioList"></ul>
+    </div>
+
+    <script src="../js/audio.js" defer></script>
+</body>
+</html>

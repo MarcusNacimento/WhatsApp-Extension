@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teddy Zap</title>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet">
-    <link rel="stylesheet" href="sidebar.css">
-    <link rel="stylesheet" href="container.css">
+    <link rel="stylesheet" href="../css/sidebar.css">
+    <link rel="stylesheet" href="../css/container.css">
+    <!--<link rel="stylesheet" href="../css/audio.css"> -->
     <!-- <link rel="stylesheet" href="modal.css"> -->
 
 
@@ -17,7 +18,7 @@
     <aside class="sidebar">
         <header class="sidebar-header">
             <a href="#" class="header-logo">
-                <img src="img/logo.png" alt="BlackTeddy" style="width: 30px; height: auto;">
+                <img src="../../assets/img/logo.png" alt="BlackTeddy" style="width: 30px; height: auto;">
             </a>
         </header>
 
@@ -41,10 +42,9 @@
                     <span class="nav-tooltip">Mensagens</span>
                 </li>
                 <li class="nav-item">
-                    <a href="# " class="nav-link" id="audioButton">
-                        <span class="nav-icon material-symbols-rounded"
-                            style="color:orange; font-size: 35px; margin-top: 15px;">Mic</span>
-                        <span class="nav-label" style="color:orange; font-size: 20px;  margin-top: 15px;">Áudios</span>
+                    <a href="#" class="nav-link" id="audioButton">
+                        <span class="nav-icon material-symbols-rounded" style="color:orange; font-size: 35px;">Mic</span>
+                        <span class="nav-label" style="color:orange; font-size: 20px;">Áudios</span>
                     </a>
                     <span class="nav-tooltip">Áudios</span>
                 </li>
@@ -112,7 +112,7 @@
         <div class="user-info">
             <span id="username">Olá, Usuário!</span>
             <span id="cellnumber">55999686600</span>
-            <img src="img/user-avatar.png" alt="Usuário" class="user-avatar">
+            <img src="../../assets/img/user-avatar.png" alt="Usuário" class="user-avatar">
         </div>
         
     </header>
@@ -185,8 +185,19 @@
             <span class="item-count" id="count-triggers">0</span> <!-- Contador -->
         </div>
 
-        <script src="sidebar.js"></script>
-        <script src="Key.js"></script>
+        <!-- Modal para Upload de Áudio -->
+        <div id="audioModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 20px; background: white; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);">
+            <h2>Gravar Áudio</h2>
+            <button id="startRecording">🎤 Iniciar Gravação</button>
+            <button id="stopRecording" disabled>🛑 Parar Gravação</button>
+            <audio id="audioPlayback" controls style="display: none; margin-top: 10px;"></audio>
+            <button id="downloadAudio" style="display: none; margin-top: 10px;">📥 Baixar Áudio</button>
+            <button onclick="fecharModalAudio()">❌ Fechar</button>
+        </div>
+        <div id="audioOverlay" onclick="fecharModalAudio()"></div>
+
+        <script src="../js/sidebar.js"></script>
+        <script src="../js/Key.js"></script>
 
 </body>
 

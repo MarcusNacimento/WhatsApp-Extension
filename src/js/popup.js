@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   if (button) {
     button.addEventListener("click", function() {
-      chrome.tabs.create({ url: chrome.runtime.getURL("dashboard.html") });
+      chrome.tabs.create({ url: chrome.runtime.getURL("src/html/dashboard.html") });
     });
   } else {
     console.error("Botão com ID 'goToDashboardBtn' não encontrado.");
@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   if (button) {
     button.addEventListener("click", function() {
-      chrome.tabs.create({ url: chrome.runtime.getURL("formulario.html") });
+      chrome.tabs.create({ url: chrome.runtime.getURL("src/html/formulario.html") });
     });
   } else {
     console.error("Botão com ID 'goToFormularioBtn' não encontrado.");
@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   if (button) {
     button.addEventListener("click", function() {
-      chrome.tabs.create({ url: chrome.runtime.getURL("formulario.html") });
+      chrome.tabs.create({ url: chrome.runtime.getURL("html/formulario.html") });
     });
   } else {
     console.error("Botão com ID 'goToFormularioBtn' não encontrado.");
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   if (button) {
     button.addEventListener("click", function() {
-      chrome.tabs.create({ url: chrome.runtime.getURL("sidebar.html") });
+      chrome.tabs.create({ url: chrome.runtime.getURL("src/html/sidebar.html") });
     });
   } else {
     console.error("Botão com ID 'goToSideBarBtn' não encontrado.");
