@@ -1,84 +1,124 @@
+// audio.js - Gerencia o modal e gravações de áudio
 document.addEventListener("DOMContentLoaded", function () {
-    const audioInput = document.getElementById("audioInput");
-    const uploadButton = document.getElementById("uploadAudio");
-    const audioList = document.getElementById("audioList");
-
-    const openAudioModal = document.getElementById("openAudioModal");
-    const closeAudioModal = document.getElementById("closeAudioModal");
     const audioModal = document.getElementById("audioModal");
+    const audioOverlay = document.getElementById("audioOverlay");
+    const openAudioModalButton = document.getElementById("audioButtonAddButton");
+    const closeAudioModalButton = document.getElementById("closeAudioModal");
+    const startRecordingButton = document.getElementById("startRecording");
+    const stopRecordingButton = document.getElementById("stopRecording");
+    const saveAudioButton = document.getElementById("saveAudio");
+    const audioPlayback = document.getElementById("audioPlayback");
 
-    // 🔹 Carrega áudios ao iniciar
-    loadAudios();
+    let mediaRecorder;
+    let audioChunks = [];
+    let currentCategory = "audio";
 
-    // 🔹 Abre o modal ao clicar no botão
-    openAudioModal.addEventListener("click", function () {
+    // Função para abrir o modal de áudio
+    window.abrirModalAudio = function () {
         audioModal.classList.remove("hidden");
-        audioModal.style.display = "block";
-    });
+        audioOverlay.classList.remove("hidden");
+        audioPlayback.classList.add("hidden");
+        saveAudioButton.disabled = true;
+        startRecordingButton.disabled = false;
+        stopRecordingButton.disabled = true;
+    };
 
-    // 🔹 Fecha o modal
-    closeAudioModal.addEventListener("click", function () {
-        audioModal.classList.add("hidden");
-        audioModal.style.display = "none";
-    });
-
-    // 🔹 Evento para enviar o áudio
-    uploadButton.addEventListener("click", function () {
-        const file = audioInput.files[0];
-        if (!file) {
-            alert("Selecione um arquivo de áudio primeiro!");
+    saveAudioButton.addEventListener("click", function () {
+        const audioNameInput = document.getElementById("audioNameInput");
+        const audioName = audioNameInput.value.trim();
+    
+        if (!audioNameInput.value.trim()) {
+            alert("Por favor, dê um nome ao áudio antes de salvar.");
             return;
         }
+    
+        // Verifica se há um áudio disponível para salvar
+        if (audioPlayback.src) {
+            const newData = {
+                name: audioNameInput,
+                audioBase64: audioPlayback.src,
+                timestamp: new Date().toISOString()
+            };
+    
+            const data = JSON.parse(localStorage.getItem("audio")) || [];
+            data.push(newData);
+            localStorage.setItem("audio", JSON.stringify(data));
+    
+            window.renderList("audio"); // Atualiza a lista globalmente
+            alert("Áudio salvo com sucesso!");
+    
+            saveAudioButton.disabled = true; // Desabilita após salvar
+            audioNameInput.value = "";       // Limpa o campo
+            fecharModalAudio();              // Fecha o modal após salvar
+        }
+    });
+    
+    // Função para fechar o modal de áudio
+    function fecharModalAudio() {
+        // Remove o foco do elemento atual
+        if(document.activeElement) document.activeElement.blur();
+    
+        audioModal.classList.add("hidden");
+        audioOverlay.classList.add("hidden");
+        audioPlayback.classList.add("hidden");
+    }
 
-        const reader = new FileReader();
-        reader.onload = function (event) {
-            const audioData = event.target.result;
-            saveAudio(file.name, audioData);
-            displayAudio(file.name, audioData);
-            closeAudioModal.click(); // Fecha o modal após enviar
-        };
-        reader.readAsDataURL(file);
+    // Eventos de abrir e fechar modal
+    openAudioModalButton.addEventListener("click", abrirModalAudio);
+    closeAudioModalButton.addEventListener("click", fecharModalAudio);
+    audioOverlay.addEventListener("click", fecharModalAudio);
+
+  
+    startRecordingButton.addEventListener("click", async () => {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+
+        mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+
+        mediaRecorder.onstop = () => {
+            const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+        
+            const reader = new FileReader();
+            reader.readAsDataURL(audioBlob);
+            reader.onloadend = () => {
+                const audioBase64 = reader.result;
+        
+                const audioNameInput = document.getElementById("audioNameInput");
+                const audioName = audioNameInput.value.trim() || "Áudio sem nome";
+        
+                const newData = {
+                    name: audioName,
+                    audioBase64,
+                    timestamp: new Date().toISOString()
+                };
+        
+                const data = JSON.parse(localStorage.getItem("audio")) || [];
+                data.push(newData);
+                localStorage.setItem("audio", JSON.stringify(data));
+        
+                window.renderList("audio"); // <-- Atualiza a lista global
+            };
+        
+            audioPlayback.src = URL.createObjectURL(audioBlob);
+            audioPlayback.classList.remove("hidden");
+            saveAudioButton.disabled = false;
+        };        
+
+        mediaRecorder.start();
+        startRecordingButton.disabled = true;
+        stopRecordingButton.disabled = false;
     });
 
-    // 🔹 Salva áudio no localStorage
-    function saveAudio(name, data) {
-        let audios = JSON.parse(localStorage.getItem("audios")) || [];
-        audios.push({ name, data });
-        localStorage.setItem("audios", JSON.stringify(audios));
-    }
+    stopRecordingButton.addEventListener("click", () => {
+        mediaRecorder.stop();
+        startRecordingButton.disabled = false;
+        stopRecordingButton.disabled = true;
+        audioModal.classList.add("hidden");
+        audioOverlay.classList.add("hidden");
+        audioPlayback.classList.add("hidden");
+    });
 
-    // 🔹 Carrega áudios do localStorage
-    function loadAudios() {
-        let audios = JSON.parse(localStorage.getItem("audios")) || [];
-        audios.forEach(audio => {
-            displayAudio(audio.name, audio.data);
-        });
-    }
-
-    // 🔹 Exibe um áudio na lista
-    function displayAudio(name, data) {
-        const listItem = document.createElement("li");
-        listItem.innerHTML = `
-            <span>${name}</span>
-            <audio controls>
-                <source src="${data}" type="audio/mp3">
-                Seu navegador não suporta este áudio.
-            </audio>
-            <button class="deleteAudio">❌</button>
-        `;
-        audioList.appendChild(listItem);
-
-        // 🔹 Botão para remover áudio
-        listItem.querySelector(".deleteAudio").addEventListener("click", function () {
-            deleteAudio(name, listItem);
-        });
-    }
-
-    // 🔹 Remove áudio do localStorage e da lista
-    function deleteAudio(name, listItem) {
-        let audios = JSON.parse(localStorage.getItem("audios")) || [];
-        audios = audios.filter(audio => audio.name !== name);
-        localStorage.setItem("audios", JSON.stringify(audios));
-        listItem.remove();
-    }
+    // Fechar modal ao clicar fora
+    audioOverlay.addEventListener("click", fecharModalAudio);
 });
