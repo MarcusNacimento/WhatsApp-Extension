@@ -122,3 +122,69 @@ document.addEventListener("DOMContentLoaded", function () {
     // Fechar modal ao clicar fora
     audioOverlay.addEventListener("click", fecharModalAudio);
 });
+
+const uploadContainer = document.getElementById("audioUploadContainer");
+const audioUploadInput = document.getElementById("audioUploadInput");
+
+// Clique para abrir o seletor de arquivos
+uploadContainer.addEventListener("click", () => {
+    audioUploadInput.click();
+});
+
+// Detectar arquivo selecionado via clique
+audioUploadInput.addEventListener("change", function () {
+    const file = this.files[0];
+    handleAudioFile(file);
+});
+
+// Eventos de arrastar e soltar
+uploadContainer.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    uploadContainer.classList.add("dragover");
+});
+
+uploadContainer.addEventListener("dragleave", () => {
+    uploadContainer.classList.remove("dragover");
+});
+
+uploadContainer.addEventListener("drop", (e) => {
+    e.preventDefault();
+    uploadContainer.classList.remove("dragover");
+
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith("audio/")) {
+        handleAudioFile(file);
+    } else {
+        alert("Por favor, arraste somente arquivos de áudio.");
+    }
+});
+
+// Função para tratar o arquivo recebido
+function handleAudioFile(file) {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onload = () => {
+        const audioBase64 = reader.result;
+
+        // Salvar áudio no localStorage
+        const newData = {
+            name: file.name,
+            audioBase64,
+            timestamp: new Date().toISOString()
+        };
+
+        const data = JSON.parse(localStorage.getItem("audio")) || [];
+        data.push(newData);
+        localStorage.setItem("audio", JSON.stringify(data));
+
+        // Atualizar lista automaticamente
+        window.renderList("audio");
+
+        alert(`Áudio "${file.name}" anexado com sucesso!`);
+    };
+
+    reader.onerror = () => {
+        alert("Ocorreu um erro ao ler o arquivo.");
+    };
+}

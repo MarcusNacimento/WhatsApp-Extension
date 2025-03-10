@@ -118,7 +118,6 @@
     <div id="contentArea" class="content-area">
         <div id="filterAndAdd" class="hidden">
             <input type="text" id="filterInput" placeholder="Digite para buscar...">
-            <!-- Botões de Adicionar -->
             <button id="chatButtonAddButton" class="hidden">Adicionar nas Mensagens</button>
             <button id="audioButtonAddButton" class="hidden">Adicionar nos Áudios</button>
             <button id="mediaButtonAddButton" class="hidden">Adicionar nas Mídias</button>
@@ -148,39 +147,39 @@
         <div class="item">
             <span class="nav-icon material-symbols-rounded" style="color:yellowgreen; padding-top: 5px; ">chat</span>
             <span class="item-label" style="color:yellowgreen ; ">Mensagens</span>
-            <span class="item-count" id="count-chat">0</span> <!-- Contador -->
+            <span class="item-count" id="count-chat">0</span> 
 
         </div>
         <div class="item">
             <span class="nav-icon material-symbols-rounded" style="color:orange; padding-top: 5px; ">Mic</span>
             <span class="item-label" style="color:orange ; ">Áudios</span>
-            <span class="item-count" id="count-audio">0</span> <!-- Contador -->
+            <span class="item-count" id="count-audio">0</span> 
 
         </div>
         <div class="item">
             <span class="nav-icon material-symbols-rounded"
                 style="color:aqua; padding-top: 5px; ">Gallery_thumbnail</span>
             <span class="item-label" style="color:aqua ;">Mídias</span>
-            <span class="item-count" id="count-media">0</span> <!-- Contador -->
+            <span class="item-count" id="count-media">0</span> 
 
         </div>
         <div class="item">
             <span class="nav-icon material-symbols-rounded" style="color:yellow; padding-top: 5px; ">Folder</span>
             <span class="item-label" style="color:yellow ;">Documentos</span>
-            <span class="item-count" id="count-documents">0</span> <!-- Contador -->
+            <span class="item-count" id="count-documents">0</span>
 
         </div>
         <div class="item">
             <span class="nav-icon material-symbols-rounded" style="color:purple; padding-top: 5px; ">Filter_alt</span>
             <span class="item-label" style="color:purple ;">Funis</span>
-            <span class="item-count" id="count-funnels">0</span> <!-- Contador -->
+            <span class="item-count" id="count-funnels">0</span> 
 
 
         </div>
         <div class="item">
             <span class="nav-icon material-symbols-rounded" style="color:red; padding-top: 5px; ">sync</span>
             <span class="item-label" style="color:red ; ">Gatilhos</span>
-            <span class="item-count" id="count-triggers">0</span> <!-- Contador -->
+            <span class="item-count" id="count-triggers">0</span> 
         </div>
 
     </div>
@@ -196,12 +195,27 @@
                 <button id="startRecording" class="record-btn">🎙️ Iniciar Gravação</button>
                 <button id="stopRecording" class="record-btn" disabled>⏹️ Parar Gravação</button>
             </div>
+            <div class="upload-container" id="audioUploadContainer">
+                <label for="audioUploadInput" class="upload-label">
+                    Clique aqui ou arraste um áudio para anexar
+                </label>
+                <input type="file" id="audioUploadInput" accept="audio/*" hidden />
+            </div>
 
             <audio id="audioPlayback" controls class="hidden"></audio>
             <button id="saveAudio" class="save-btn hidden" disabled>💾 Salvar Áudio</button>
         </div>
     </div>
-
+    <div id="detailsModal" class="modal hidden">
+        <div class="modal-content">
+            <span id="closeDetailsModal" class="close">&times;</span>
+            <h2 id="detailsTitle"></h2>
+            <p id="detailsDate"></p>
+            <div id="detailsAudioContainer"></div> <!-- se for áudio -->
+        </div>
+    </div>
+    <div id="detailsOverlay" class="hidden"></div>
+    <div id="detailsContainer" class="details-panel hidden"></div>
     <script src="../js/sidebar.js"></script>
     <script src="../js/audio.js"></script>
     <script src="../js/Key.js"></script>

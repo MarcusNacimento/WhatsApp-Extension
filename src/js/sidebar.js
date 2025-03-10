@@ -36,68 +36,112 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    window.renderList = function(category) {
+    window.openDetailsModal = function (item, category) {
+    const detailsContainer = document.getElementById("detailsContainer");
+
+    if (!detailsContainer) {
+        console.error("❌ ERRO: O elemento #detailsContainer não foi encontrado no DOM.");
+        return;
+    }
+
+    console.log("🔎 Exibindo detalhes:", item);
+
+    detailsContainer.innerHTML = `
+        <h3>${item.name}</h3>
+        <p>Data: ${new Date(item.timestamp).toLocaleString()}</p>
+        <p>Categoria: ${category}</p>
+    `;
+
+    // ✅ Usa uma classe específica para exibição
+    detailsContainer.classList.remove("hidden");
+    detailsContainer.classList.add("visible");
+    detailsContainer.style.display = "block"; // Garante que ele seja mostrado
+};
+
+document.addEventListener("DOMContentLoaded", function () {
+    const navLinks = document.querySelectorAll(".nav-link");
+
+    navLinks.forEach(link => {
+        link.addEventListener("click", function () {
+            console.log(`🔄 Menu ${link.id} clicado, ocultando detalhes...`);
+
+            let detailsContainer = document.getElementById("detailsContainer");
+
+            if (detailsContainer) {
+                // Em vez de remover, apenas esconde o modal
+                detailsContainer.classList.remove("visible");
+                detailsContainer.classList.add("hidden");
+                detailsContainer.style.display = "none"; // Esconde corretamente
+            }
+        });
+    });
+});
+
+
+
+    window.renderList = function (category) {
         const itemList = document.getElementById("itemList");
-    
+
         itemList.style.maxHeight = "600px";
         itemList.style.overflowY = "auto";
         itemList.style.padding = "10px";
         itemList.innerHTML = "";
-    
+
         const data = JSON.parse(localStorage.getItem(category)) || [];
-    
+
         if (data.length === 0) {
             itemList.innerHTML = "<p style='text-align: center;'>Nenhum item adicionado ainda.</p>";
             return;
         }
-    
+
         data.forEach((item, index) => {
             const listItem = document.createElement("div");
             listItem.classList.add("list-item");
-        
-            // Nome do item
+
             const itemName = document.createElement("span");
             itemName.classList.add("item-name");
             itemName.textContent = item.name;
-        
-        
-            // Container de ações
+
             const itemActions = document.createElement("div");
             itemActions.classList.add("item-actions");
-        
+
             const editButton = document.createElement("button");
             editButton.classList.add("edit-btn");
             editButton.textContent = "Editar";
-            editButton.addEventListener("click", function () {
+            editButton.addEventListener("click", (e) => {
+                e.stopPropagation();
                 openEditModal(category, index, item.name);
             });
-        
+
             const deleteButton = document.createElement("button");
             deleteButton.classList.add("delete-btn");
             deleteButton.textContent = "Deletar";
-            deleteButton.addEventListener("click", function () {
+            deleteButton.addEventListener("click", (e) => {
+                e.stopPropagation();
                 deleteItem(category, index);
             });
-        
+
+            listItem.appendChild(itemName);
             itemActions.appendChild(editButton);
             itemActions.appendChild(deleteButton);
-        
-            listItem.appendChild(itemName); // Nome aparece aqui
-        
-            // Condição específica para categoria áudio
+            listItem.appendChild(itemActions);
+
             if (category === "audio" && item.audioBase64) {
                 const audioElement = document.createElement("audio");
                 audioElement.src = item.audioBase64;
                 audioElement.controls = true;
                 listItem.appendChild(audioElement);
             }
-        
-            listItem.appendChild(itemActions);
+
+            listItem.addEventListener("click", function () {
+                window.openDetailsModal(item, category);
+            });
+
+
             itemList.appendChild(listItem);
         });
-        
     }
-    
+
     const addForm = document.getElementById("addForm");
     addForm.addEventListener("submit", function (event) {
         event.preventDefault();
@@ -148,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const addModal = document.getElementById("addModal");
         const addForm = document.getElementById("addForm");
 
-        modalTitle.innerText = "Editar Item"; 
+        modalTitle.innerText = "Editar Item";
         nameInput.value = currentName; // Preenche o campo com o valor atual
         addModal.classList.remove("hidden"); // Exibe o modal
 
@@ -171,7 +215,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-// Segundo bloco: Alterna visibilidade e configura os botões "Adicionar"
 document.addEventListener("DOMContentLoaded", function () {
     const navLinks = document.querySelectorAll(".nav-link");
     const filterAndAdd = document.getElementById("filterAndAdd");
@@ -223,7 +266,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-// Função para alternar visibilidade de elementos
 function toggleVisibility(element, isVisible) {
     if (element) {
         if (isVisible) {
@@ -236,7 +278,6 @@ function toggleVisibility(element, isVisible) {
     }
 }
 
-// Terceiro bloco: Gerencia o modal e o formulário de adicionar itens
 document.addEventListener("DOMContentLoaded", function () {
     const addModal = document.getElementById("addModal");
     const closeModalButton = document.getElementById("closeModal");
@@ -259,7 +300,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
-// Quarto bloco: Gerencia dados no localStorage
 document.addEventListener("DOMContentLoaded", function () {
     const navLinks = document.querySelectorAll(".nav-link"); // Links do menu
 
@@ -294,7 +334,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
-
 
 function updateCategoryCounts() {
     const categories = {
@@ -335,7 +374,3 @@ document.getElementById("filterInput").addEventListener("input", function () {
         }
     });
 });
-
-
-
-

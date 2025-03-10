@@ -342,12 +342,15 @@ body {
   transform: translate(-50%, -50%);
   background: white;
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 30px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
   z-index: 99999; /* Certifique-se que seja um valor bem alto */
   display: block; /* Garanta que está exibindo como bloco */
   visibility: visible;
   opacity: 1;
+  width: 600px;
+  height: 500px;
+  
 }
 
 .hidden {
@@ -364,6 +367,7 @@ body {
   background: rgba(0, 0, 0, 0.5);
   z-index: 9998;
 }
+  
 
 /* Botão de Fechar */
 .close-btn {
@@ -503,3 +507,66 @@ body {
   /* Move para a esquerda */
 }
 
+.upload-container {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+  border: 2px dashed #aaa;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.upload-container.dragover {
+  background-color: #f0faff;
+  border-color: #66b3ff;
+}
+
+.upload-label {
+  color: #555;
+  font-size: 16px;
+}
+
+.blur-background {
+  filter: blur(5px);
+  pointer-events: none;
+  user-select: none;
+}
+
+.item-details {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 350px;
+  height: 100vh;
+  background-color: #f3f3f3;
+  padding: 20px;
+  box-shadow: -2px 0 10px rgba(0,0,0,0.3);
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+#detailsContainer {
+  display: none;
+  position: absolute;
+  top: 290px;
+  right: 400px;
+  width: 350px;
+  height: auto; /* Altura flexível */
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.3s ease-in-out;
+}
+
+#detailsContainer.visible {
+  display: block;
+  opacity: 1;
+}
+
+#detailsContainer.hidden {
+  display: none !important; /* 🔹 Garante que será escondido */
+  opacity: 0;
+}
