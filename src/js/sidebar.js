@@ -8,13 +8,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const itemList = document.getElementById("itemList"); // Contêiner da lista
     let currentCategory = ""; // Categoria atual
 
-
     filterAndAdd.style.display = "none"; // Esconde o filtro de pesquisa na tela HOME
 
     navLinks.forEach(link => {
         link.addEventListener("click", function () {
             const buttonId = link.id;
             const category = buttonId.replace("Button", ""); // Extrai a categoria com base no botão
+
+            // 🔹 Fecha o modal ao trocar de menu
+            closeDetailsModal();
 
             if (buttonId === "homeButton") {
                 // Para o botão Home, exibe o container principal e esconde o filtro e a lista
@@ -37,46 +39,37 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     window.openDetailsModal = function (item, category) {
-    const detailsContainer = document.getElementById("detailsContainer");
+        const detailsContainer = document.getElementById("detailsContainer");
 
-    if (!detailsContainer) {
-        console.error("❌ ERRO: O elemento #detailsContainer não foi encontrado no DOM.");
-        return;
+        if (!detailsContainer) {
+            console.error("❌ ERRO: O elemento #detailsContainer não foi encontrado no DOM.");
+            return;
+        }
+
+        console.log("🔎 Exibindo detalhes:", item);
+
+        detailsContainer.innerHTML = `
+            <h3>${item.name}</h3>
+            <p>Data: ${new Date(item.timestamp).toLocaleString()}</p>
+            <p>Categoria: ${category}</p>
+        `;
+
+        // ✅ Usa uma classe específica para exibição
+        detailsContainer.classList.remove("hidden");
+        detailsContainer.classList.add("visible");
+        detailsContainer.style.display = "block"; // Garante que ele seja mostrado
+    };
+
+    function closeDetailsModal() {
+        let detailsContainer = document.getElementById("detailsContainer");
+
+        if (detailsContainer) {
+            console.log("❌ Fechando modal ao mudar de menu...");
+            detailsContainer.classList.remove("visible");
+            detailsContainer.classList.add("hidden");
+            detailsContainer.style.display = "none"; // Esconde corretamente
+        }
     }
-
-    console.log("🔎 Exibindo detalhes:", item);
-
-    detailsContainer.innerHTML = `
-        <h3>${item.name}</h3>
-        <p>Data: ${new Date(item.timestamp).toLocaleString()}</p>
-        <p>Categoria: ${category}</p>
-    `;
-
-    // ✅ Usa uma classe específica para exibição
-    detailsContainer.classList.remove("hidden");
-    detailsContainer.classList.add("visible");
-    detailsContainer.style.display = "block"; // Garante que ele seja mostrado
-};
-
-document.addEventListener("DOMContentLoaded", function () {
-    const navLinks = document.querySelectorAll(".nav-link");
-
-    navLinks.forEach(link => {
-        link.addEventListener("click", function () {
-            console.log(`🔄 Menu ${link.id} clicado, ocultando detalhes...`);
-
-            let detailsContainer = document.getElementById("detailsContainer");
-
-            if (detailsContainer) {
-                // Em vez de remover, apenas esconde o modal
-                detailsContainer.classList.remove("visible");
-                detailsContainer.classList.add("hidden");
-                detailsContainer.style.display = "none"; // Esconde corretamente
-            }
-        });
-    });
-});
-
 
 
     window.renderList = function (category) {
@@ -373,4 +366,30 @@ document.getElementById("filterInput").addEventListener("input", function () {
             item.style.display = "none"; // Esconde se não corresponder
         }
     });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const usernameElement = document.getElementById("username");
+    const cellnumberElement = document.getElementById("cellnumberInput");
+
+    if (usernameElement) {
+        const savedUsername = localStorage.getItem("username") || "Usuário"; // Nome salvo ou padrão "Usuário"
+        usernameElement.textContent = `Olá, ${savedUsername}!`;
+    }
+});
+
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("🚀 sidebar.js carregado!");
+
+    const addButton = document.getElementById("AddButton");
+
+    if (addButton) {
+        console.log("✅ Botão 'Adicionar' encontrado.");
+        addButton.addEventListener("click", function () {
+            console.log("🟢 Botão 'Adicionar' clicado!");
+        });
+    }
 });

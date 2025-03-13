@@ -1,59 +1,39 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const button = document.getElementById("goToDashboardBtn");
+  console.log("🚀 popup.js carregado!");
 
-  if (button) {
-    button.addEventListener("click", function () {
-      chrome.tabs.create({ url: chrome.runtime.getURL("src/html/dashboard.html") });
-    });
-  } else {
-    console.error("Botão com ID 'goToDashboardBtn' não encontrado.");
-  }
-});
+  const buttons = [
+    { id: "goToDashboardBtn", url: "dashboard.html" },
+    { id: "goToFormularioBtn", url: "formulario.html" },
+    { id: "goToSideBarBtn", url: "sidebar.html" }
+  ];
 
-document.addEventListener("DOMContentLoaded", function () {
-  const button = document.getElementById("goToFormularioBtn");
+  buttons.forEach(({ id, url }) => {
+    const button = document.getElementById(id);
 
-  if (button) {
-    button.addEventListener("click", function () {
-      chrome.tabs.create({ url: chrome.runtime.getURL("src/html/formulario.html") });
-    });
-  } else {
-    console.error("Botão com ID 'goToFormularioBtn' não encontrado.");
-  }
-});
+    if (button) {
+      console.log(`✅ Botão encontrado: ${id}`);
 
-document.addEventListener("DOMContentLoaded", function () {
-  const button = document.getElementById("goToFormularioBtn");
+      button.addEventListener("click", function () {
+        console.log(`🟢 Botão ${id} clicado!`);
 
-  if (button) {
-    button.addEventListener("click", function () {
-      chrome.tabs.create({ url: chrome.runtime.getURL("html/formulario.html") });
-    });
-  } else {
-    console.error("Botão com ID 'goToFormularioBtn' não encontrado.");
-  }
-});
+        // 🔹 Verifica se o usuário está logado no localStorage
+        if (!localStorage.getItem("isLoggedIn")) {
+          console.warn("⚠️ Usuário não está logado! Redirecionando para login.html");
+          
+          // 🔹 Salva para onde ele queria ir e manda para a tela de login
+          localStorage.setItem("redirectAfterLogin", url);
+          let loginUrl = chrome.runtime.getURL("src/html/login.html");
+          chrome.tabs.create({ url: loginUrl });
+          return;
+        }
 
-document.addEventListener("DOMContentLoaded", function () {
-  const button = document.getElementById("goToSideBarBtn");
-
-  if (button) {
-    button.addEventListener("click", function () {
-      chrome.tabs.create({ url: chrome.runtime.getURL("src/html/sidebar.html") });
-    });
-  } else {
-    console.error("Botão com ID 'goToSideBarBtn' não encontrado.");
-  }
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-  const button = document.getElementById("goToGravarBtn");
-
-  if (button) {
-    button.addEventListener("click", function () {
-      chrome.tabs.create({ url: chrome.runtime.getURL("src/html/audio.html") });
-    });
-  } else {
-    console.error("Botão com ID 'goToSideBarBtn' não encontrado.");
-  }
+        // 🔹 Ajusta a URL corretamente sem duplicação
+        let correctUrl = chrome.runtime.getURL(`src/html/${url}`);
+        console.log(`🔄 Redirecionando para: ${correctUrl}`);
+        chrome.tabs.create({ url: correctUrl });
+      });
+    } else {
+      console.error(`❌ ERRO: Botão não encontrado - ${id}`);
+    }
+  });
 });

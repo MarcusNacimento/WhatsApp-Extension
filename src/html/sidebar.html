@@ -97,22 +97,20 @@
                     <span class="nav-tooltip">Profile</span>
                 </li>
                 <li class="nav-item">
-                    <a href="# " class="nav-link">
+                    <a href="#" class="nav-link" id="logoutBtn">
                         <span class="nav-icon material-symbols-rounded">logout</span>
                         <span class="nav-label">Logout</span>
                     </a>
-                    <span class="nav-tooltip">Logout</span>
                 </li>
             </ul>
         </nav>
     </aside>
     <header class="header">
         <div class="user-info">
-            <span id="username">Olá, Usuário!</span>
-            <span id="cellnumber">55999686600</span>
+            <span id="username">Olá, Usuário!</span> <!-- 🔹 Este será atualizado via JS -->
+            <span id="cellnumberInput">55999686600</span>
             <img src="../../assets/img/user-avatar.png" alt="Usuário" class="user-avatar">
         </div>
-
     </header>
 
     <div id="contentArea" class="content-area">
@@ -216,9 +214,10 @@
     </div>
     <div id="detailsOverlay" class="hidden"></div>
     <div id="detailsContainer" class="details-panel hidden"></div>
+    <script src="../js/logout.js"></script>
     <script src="../js/sidebar.js"></script>
     <script src="../js/audio.js"></script>
-    <script src="../js/Key.js"></script>
+
 </body>
 
 </html>
