@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet">
     <link rel="stylesheet" href="../css/sidebar.css">
     <link rel="stylesheet" href="../css/container.css">
+    <link rel="stylesheet" href="../css/media.css">
 
 </head>
 
@@ -107,7 +108,7 @@
     </aside>
     <header class="header">
         <div class="user-info">
-            <span id="username">Olá, Usuário!</span> <!-- 🔹 Este será atualizado via JS -->
+            <span id="username">Olá, Usuário!</span> 
             <span id="cellnumberInput">55999686600</span>
             <img src="../../assets/img/user-avatar.png" alt="Usuário" class="user-avatar">
         </div>
@@ -145,20 +146,20 @@
         <div class="item">
             <span class="nav-icon material-symbols-rounded" style="color:yellowgreen; padding-top: 5px; ">chat</span>
             <span class="item-label" style="color:yellowgreen ; ">Mensagens</span>
-            <span class="item-count" id="count-chat">0</span> 
+            <span class="item-count" id="count-chat">0</span>
 
         </div>
         <div class="item">
             <span class="nav-icon material-symbols-rounded" style="color:orange; padding-top: 5px; ">Mic</span>
             <span class="item-label" style="color:orange ; ">Áudios</span>
-            <span class="item-count" id="count-audio">0</span> 
+            <span class="item-count" id="count-audio">0</span>
 
         </div>
         <div class="item">
             <span class="nav-icon material-symbols-rounded"
                 style="color:aqua; padding-top: 5px; ">Gallery_thumbnail</span>
             <span class="item-label" style="color:aqua ;">Mídias</span>
-            <span class="item-count" id="count-media">0</span> 
+            <span class="item-count" id="count-media">0</span>
 
         </div>
         <div class="item">
@@ -170,14 +171,14 @@
         <div class="item">
             <span class="nav-icon material-symbols-rounded" style="color:purple; padding-top: 5px; ">Filter_alt</span>
             <span class="item-label" style="color:purple ;">Funis</span>
-            <span class="item-count" id="count-funnels">0</span> 
+            <span class="item-count" id="count-funnels">0</span>
 
 
         </div>
         <div class="item">
             <span class="nav-icon material-symbols-rounded" style="color:red; padding-top: 5px; ">sync</span>
             <span class="item-label" style="color:red ; ">Gatilhos</span>
-            <span class="item-count" id="count-triggers">0</span> 
+            <span class="item-count" id="count-triggers">0</span>
         </div>
 
     </div>
@@ -204,12 +205,31 @@
             <button id="saveAudio" class="save-btn hidden" disabled>💾 Salvar Áudio</button>
         </div>
     </div>
+     <div id="mediaOverlay" class="modal-overlay hidden"></div>
+
+     <div id="mediaModal" class="modal hidden">
+         <div class="modal-content">
+             <button id="closeMediaModal" class="close-btn">&times;</button>
+             <h2>📁 Upload de Mídia</h2>
+             <input type="text" id="mediaNameInput" placeholder="Digite o nome..." required>
+
+
+             <div id="mediaUploadContainer" style="border: 2px dashed gray; padding: 20px; cursor: pointer;">
+                 Clique ou arraste imagem/vídeo aqui
+                 <input type="file" id="mediaUploadInput" accept="image/*,video/*" hidden />
+             </div>
+
+             <div id="mediaPreview" style="margin-top: 20px;"></div>
+
+             <button id="saveMedia" class="save-btn" disabled>💾 Salvar Mídia</button>
+         </div>
+     </div>
     <div id="detailsModal" class="modal hidden">
         <div class="modal-content">
             <span id="closeDetailsModal" class="close">&times;</span>
             <h2 id="detailsTitle"></h2>
             <p id="detailsDate"></p>
-            <div id="detailsAudioContainer"></div> <!-- se for áudio -->
+            <div id="detailsAudioContainer"></div> 
         </div>
     </div>
     <div id="detailsOverlay" class="hidden"></div>
@@ -217,6 +237,8 @@
     <script src="../js/logout.js"></script>
     <script src="../js/sidebar.js"></script>
     <script src="../js/audio.js"></script>
+    <script src="../js/media.js"></script>
+
 
 </body>
 

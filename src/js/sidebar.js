@@ -46,8 +46,6 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        console.log("🔎 Exibindo detalhes:", item);
-
         detailsContainer.innerHTML = `
             <h3>${item.name}</h3>
             <p>Data: ${new Date(item.timestamp).toLocaleString()}</p>
@@ -64,7 +62,6 @@ document.addEventListener("DOMContentLoaded", function () {
         let detailsContainer = document.getElementById("detailsContainer");
 
         if (detailsContainer) {
-            console.log("❌ Fechando modal ao mudar de menu...");
             detailsContainer.classList.remove("visible");
             detailsContainer.classList.add("hidden");
             detailsContainer.style.display = "none"; // Esconde corretamente
@@ -124,6 +121,24 @@ document.addEventListener("DOMContentLoaded", function () {
                 audioElement.src = item.audioBase64;
                 audioElement.controls = true;
                 listItem.appendChild(audioElement);
+            }
+
+            else if (category === "media" && item.src) {
+                const mediaIcon = document.createElement("span");
+                mediaIcon.textContent = item.type === "image" ? "📷 Imagem" : "🎥 Vídeo";
+
+                const viewButton = document.createElement("button");
+                viewButton.textContent = "👁 Ver mídia";
+                viewButton.style.marginLeft = "10px";
+
+                viewButton.addEventListener("click", (e) => {
+                    e.stopPropagation(); 
+                    abrirPreviewModal(item);
+                });
+
+                listItem.appendChild(mediaIcon);
+                listItem.appendChild(viewButton);
+                
             }
 
             listItem.addEventListener("click", function () {
@@ -298,9 +313,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Seleciona os modais fora do loop para evitar reprocessamento
     const addModal = document.getElementById("addModal");
-    const audioModal = document.getElementById("audioModal");
     const modalTitle = document.getElementById("modalTitle");
-    const addForm = document.getElementById("addForm");
     let currentCategory = "";
 
     // 🔹 Abrir modal de adicionar item
@@ -319,7 +332,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (button.id === "audioButtonAddButton") {
                 abrirModalAudio();
-            } else {
+            }
+            else if (button.id === "mediaButtonAddButton") {
+                abrirModalMedia();
+            }
+            else {
                 const title = button.innerText.replace("Adicionar nos ", "").replace("Adicionar nas ", "");
                 const category = button.id.replace("AddButton", "");
                 openAddModal(title, category);
@@ -382,14 +399,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("🚀 sidebar.js carregado!");
 
     const addButton = document.getElementById("AddButton");
 
     if (addButton) {
-        console.log("✅ Botão 'Adicionar' encontrado.");
         addButton.addEventListener("click", function () {
-            console.log("🟢 Botão 'Adicionar' clicado!");
         });
     }
 });
