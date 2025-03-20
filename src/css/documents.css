@@ -1,0 +1,22 @@
+/* Força o fundo branco do conteúdo do modal */
+#documentsModal .modal-content {
+    background: #fff !important;
+    position: relative;
+    z-index: 1001;
+}
+
+/* Garante que o overlay esteja por trás */
+#documentsOverlay {
+    background: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+}
+
+
+#documentsModal .modal-content {
+    background: #fff !important;
+    padding: 20px;
+    border-radius: 8px;
+    z-index: 1001;
+}

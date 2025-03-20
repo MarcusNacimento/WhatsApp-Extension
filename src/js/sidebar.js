@@ -115,7 +115,7 @@ document.addEventListener("DOMContentLoaded", function () {
             itemActions.appendChild(editButton);
             itemActions.appendChild(deleteButton);
             listItem.appendChild(itemActions);
-
+            console.log(category);
             if (category === "audio" && item.audioBase64) {
                 const audioElement = document.createElement("audio");
                 audioElement.src = item.audioBase64;
@@ -132,13 +132,43 @@ document.addEventListener("DOMContentLoaded", function () {
                 viewButton.style.marginLeft = "10px";
 
                 viewButton.addEventListener("click", (e) => {
-                    e.stopPropagation(); 
+                    e.stopPropagation();
                     abrirPreviewModal(item);
                 });
 
                 listItem.appendChild(mediaIcon);
                 listItem.appendChild(viewButton);
-                
+
+            }
+
+            else if (category === "documents" && item.fileBase64) {
+                const docIcon = document.createElement("span");
+                docIcon.textContent = "📄 Documento";
+
+                const docName = document.createElement("strong");
+                docName.textContent = ` ${item.name || "Sem Nome"}`;
+
+                const viewButton = document.createElement("button");
+                viewButton.textContent = "📄 Visualizar";
+                viewButton.style.marginLeft = "10px";
+
+                viewButton.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    abrirDocumentoModal(item);
+                });                
+
+                const downloadButton = document.createElement("button");
+                downloadButton.textContent = "⬇️ Baixar";
+                downloadButton.style.marginLeft = "10px";
+
+                downloadButton.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    baixarDocumento(item);
+                });
+
+                listItem.appendChild(docIcon);
+                listItem.appendChild(viewButton);
+                listItem.appendChild(downloadButton);
             }
 
             listItem.addEventListener("click", function () {
@@ -336,6 +366,10 @@ document.addEventListener("DOMContentLoaded", function () {
             else if (button.id === "mediaButtonAddButton") {
                 abrirModalMedia();
             }
+            else if(button.id === "documentsButtonAddButton"){
+                abrirModalDocumento();
+            }
+
             else {
                 const title = button.innerText.replace("Adicionar nos ", "").replace("Adicionar nas ", "");
                 const category = button.id.replace("AddButton", "");
