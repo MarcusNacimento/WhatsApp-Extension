@@ -144,31 +144,64 @@ document.addEventListener("DOMContentLoaded", function () {
             else if (category === "documents" && item.fileBase64) {
                 const docIcon = document.createElement("span");
                 docIcon.textContent = "📄 Documento";
-
+            
                 const docName = document.createElement("strong");
                 docName.textContent = ` ${item.name || "Sem Nome"}`;
-
+            
                 const viewButton = document.createElement("button");
                 viewButton.textContent = "📄 Visualizar";
                 viewButton.style.marginLeft = "10px";
-
+            
                 viewButton.addEventListener("click", (e) => {
                     e.stopPropagation();
                     abrirDocumentoModal(item);
-                });                
-
+                });
+            
                 const downloadButton = document.createElement("button");
                 downloadButton.textContent = "⬇️ Baixar";
                 downloadButton.style.marginLeft = "10px";
-
+            
                 downloadButton.addEventListener("click", (e) => {
                     e.stopPropagation();
                     baixarDocumento(item);
                 });
-
-                listItem.appendChild(docIcon);
+            
+                const funilButton = document.createElement("button");
+                funilButton.textContent = "➕ Ao Funil";
+                funilButton.style.marginLeft = "10px";
+            
+                funilButton.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    adicionarAoFunil(item, "documents"); // <-- Passa o item e a categoria
+                });
+            
                 listItem.appendChild(viewButton);
                 listItem.appendChild(downloadButton);
+                listItem.appendChild(funilButton); // <-- novo botão
+            }
+
+            else if (category === "funnels" && item.steps) {
+                const funnelIcon = document.createElement("span");
+                funnelIcon.textContent = "🧩 Funil";
+            
+                const funilName = document.createElement("strong");
+                funilName.textContent = ` ${item.name}`;
+            
+                const stepsCount = document.createElement("span");
+                stepsCount.textContent = ` (${item.steps.length} etapas)`;
+            
+                const startButton = document.createElement("button");
+                startButton.textContent = "▶️ Iniciar Funil";
+                startButton.style.marginLeft = "10px";
+            
+                startButton.addEventListener("click", () => {
+                    executarFunil(item);
+                });
+            
+                listItem.appendChild(funnelIcon);
+                listItem.appendChild(funilName);
+                listItem.appendChild(stepsCount);
+                listItem.appendChild(startButton);
             }
 
             listItem.addEventListener("click", function () {
@@ -368,6 +401,9 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             else if(button.id === "documentsButtonAddButton"){
                 abrirModalDocumento();
+            }
+            else if (button.id === "funnelsButtonAddButton"){
+                abrirModalFunil();
             }
 
             else {

@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="../css/container.css">
     <link rel="stylesheet" href="../css/media.css">
     <link rel="stylesheet" href="../css/documents.css">
+    <link rel="stylesheet" href="../css/funis.css">
+
 
 
 </head>
@@ -250,6 +252,37 @@
         <div class="modal-content" id="documentPreviewContent">
         </div>
     </div>
+    <div id="createFunnelModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>🧩 Criar Funil</h2>
+    
+            <input type="text" id="funnelNameInput" placeholder="Nome do Funil" required style="margin-bottom: 10px;">
+            <input type="number" id="funnelDelayInput" placeholder="Delay entre etapas (segundos)" min="1" value="5" required style="margin-bottom: 10px;">
+    
+            <h4>Adicionar Itens ao Funil</h4>
+            <div id="funnelItemsContainer" style="margin-bottom: 10px;">
+                <button type="button" id="addMessageStep">+ Mensagem</button>
+                <button type="button" id="addAudioStep">+ Áudio</button>
+                <button type="button" id="addMediaStep">+ Mídia</button>
+                <button type="button" id="addDocumentStep">+ Documento</button>
+            </div>
+    
+            <!-- Agora dentro da modal -->
+            <div id="funnelStepsContainer" style="margin-bottom: 15px; border: 1px solid #ccc; padding: 10px; border-radius: 4px; max-height: 200px; overflow-y: auto;">
+                <p>Ainda não há etapas neste funil.</p>
+            </div>
+    
+            <div class="modal-buttons">
+                <button id="saveFunnel" class="save-btn">Criar Funil</button>
+                <button id="closeFunnelModal" class="close-btn">Fechar</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="createFunnelOverlay" class="modal-overlay hidden"></div>
+    
+    
+    <div id="selectItemOverlay" class="modal-overlay hidden"></div>
     <div id="detailsModal" class="modal hidden">
         <div class="modal-content">
             <span id="closeDetailsModal" class="close">&times;</span>
@@ -265,6 +298,7 @@
     <script src="../js/audio.js"></script>
     <script src="../js/media.js"></script>
     <script src="../js/documents.js"></script>
+    <script src="../js/funis.js"></script>
 
 
 

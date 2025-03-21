@@ -105,20 +105,30 @@ document.addEventListener("DOMContentLoaded", function () {
         const modal = document.getElementById("documentPreviewModal");
         const overlay = document.getElementById("documentPreviewOverlay");
         const container = document.getElementById("documentPreviewContent");
-
+    
         modal.classList.remove("hidden");
         overlay.classList.remove("hidden");
-
-        // Limpa o modal antes
         container.innerHTML = '';
-
-        if (item.fileBase64.startsWith("data:application/pdf")) {
-            // Mostra o PDF direto no modal
+    
+        const fileType = item.fileBase64.split(';')[0];
+    
+        if (fileType.includes("application/pdf")) {
+            // Exibe o PDF no modal
             container.innerHTML = `<iframe src="${item.fileBase64}" style="width:100%; height:500px;" frameborder="0"></iframe>`;
         } else {
-            container.innerHTML = `<p>Visualização não disponível para este formato. Use o botão de download.</p>`;
+            // Cria um Blob para o arquivo
+            const blob = new Blob([atob(item.fileBase64.split(',')[1])], { type: item.type || 'application/octet-stream' });
+            const blobUrl = URL.createObjectURL(blob);
+    
+            container.innerHTML = `
+                <p>Arquivo: <strong>${item.fileName}</strong></p>
+                <div style="margin-top: 10px;">
+                    <a href="${blobUrl}" target="_blank" class="btn-link">🔗 Abrir no navegador</a>
+                    <a href="${blobUrl}" download="${item.fileName}" class="btn-link" style="margin-left: 15px;">⬇️ Baixar</a>
+                </div>
+            `;
         }
-    }
+    };
 
     document.getElementById("documentPreviewOverlay").addEventListener("click", () => {
         fecharDocumentoModal();
