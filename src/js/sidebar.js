@@ -116,13 +116,15 @@ document.addEventListener("DOMContentLoaded", function () {
             itemActions.appendChild(deleteButton);
             listItem.appendChild(itemActions);
             console.log(category);
-            if (category === "audio" && item.audioBase64) {
-                const audioElement = document.createElement("audio");
-                audioElement.src = item.audioBase64;
-                audioElement.controls = true;
-                listItem.appendChild(audioElement);
-            }
 
+
+            if (category === "messages") {
+                const messageBox = document.createElement("div");
+                messageBox.classList.add("message-box");
+                messageBox.textContent = item.content || "Mensagem sem conteúdo";
+                listItem.appendChild(messageBox);
+            }
+            
             else if (category === "media" && item.src) {
                 const mediaIcon = document.createElement("span");
                 mediaIcon.textContent = item.type === "image" ? "📷 Imagem" : "🎥 Vídeo";
@@ -166,18 +168,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     baixarDocumento(item);
                 });
             
-                const funilButton = document.createElement("button");
-                funilButton.textContent = "➕ Ao Funil";
-                funilButton.style.marginLeft = "10px";
-            
-                funilButton.addEventListener("click", (e) => {
-                    e.stopPropagation();
-                    adicionarAoFunil(item, "documents"); // <-- Passa o item e a categoria
-                });
-            
                 listItem.appendChild(viewButton);
                 listItem.appendChild(downloadButton);
-                listItem.appendChild(funilButton); // <-- novo botão
             }
 
             else if (category === "funnels" && item.steps) {
@@ -393,7 +385,10 @@ document.addEventListener("DOMContentLoaded", function () {
         button.addEventListener("click", function (event) {
             event.stopPropagation();
 
-            if (button.id === "audioButtonAddButton") {
+            if (button.id === "messagesButtonAddButton") {
+                abrirMensagemModal();
+            }
+            else if (button.id === "audioButtonAddButton") {
                 abrirModalAudio();
             }
             else if (button.id === "mediaButtonAddButton") {
@@ -417,7 +412,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function updateCategoryCounts() {
     const categories = {
-        chat: "count-chat",
+        chat: "count-messages",
         audio: "count-audio",
         media: "count-media",
         documents: "count-documents",

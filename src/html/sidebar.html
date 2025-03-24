@@ -35,7 +35,7 @@
                     <span class="nav-tooltip">Início</span>
                 </li>
                 <li class="nav-item">
-                    <a href="# " class="nav-link" id="chatButton">
+                    <a href="# " class="nav-link" id="messagesButton">
                         <span class="nav-icon material-symbols-rounded"
                             style="color:yellowgreen; font-size: 35px;margin-top: 15px; ">chat</span>
                         <span class="nav-label"
@@ -121,7 +121,7 @@
     <div id="contentArea" class="content-area">
         <div id="filterAndAdd" class="hidden">
             <input type="text" id="filterInput" placeholder="Digite para buscar...">
-            <button id="chatButtonAddButton" class="hidden">Adicionar nas Mensagens</button>
+            <button id="messagesButtonAddButton" class="hidden">Adicionar nas Mensagens</button>
             <button id="audioButtonAddButton" class="hidden">Adicionar nos Áudios</button>
             <button id="mediaButtonAddButton" class="hidden">Adicionar nas Mídias</button>
             <button id="documentsButtonAddButton" class="hidden">Adicionar nos Documentos</button>
@@ -150,7 +150,7 @@
         <div class="item">
             <span class="nav-icon material-symbols-rounded" style="color:yellowgreen; padding-top: 5px; ">chat</span>
             <span class="item-label" style="color:yellowgreen ; ">Mensagens</span>
-            <span class="item-count" id="count-chat">0</span>
+            <span class="item-count" id="count-messages">0</span>
 
         </div>
         <div class="item">
@@ -267,7 +267,6 @@
                 <button type="button" id="addDocumentStep">+ Documento</button>
             </div>
     
-            <!-- Agora dentro da modal -->
             <div id="funnelStepsContainer" style="margin-bottom: 15px; border: 1px solid #ccc; padding: 10px; border-radius: 4px; max-height: 200px; overflow-y: auto;">
                 <p>Ainda não há etapas neste funil.</p>
             </div>

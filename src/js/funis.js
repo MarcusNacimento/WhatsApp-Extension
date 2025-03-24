@@ -6,15 +6,11 @@ document.addEventListener("DOMContentLoaded", () => {
     funnelsList = document.getElementById("funnelsList");
     steps = [];
 
-    // ---------------------
-    // SELETOR DE ITENS
-    // ---------------------
     window.abrirSeletorItem = function (category) {
         const data = JSON.parse(localStorage.getItem(category)) || [];
         const overlay = document.getElementById("selectItemOverlay");
         overlay.classList.remove("hidden");
     
-        // Limpar overlay antes de adicionar o modal novo
         overlay.innerHTML = "";
     
         const modal = document.createElement("div");
@@ -49,25 +45,18 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     
 
-    // ---------------------
-    // ABRIR MODAL FUNIL
-    // ---------------------
     window.abrirModalFunil = function () {
         funnelModal.classList.remove("hidden");
         funnelOverlay.classList.remove("hidden");
         steps.length = 0;
         renderStepsPreview();
 
-        // Bind nos botões só após o modal estar visível
         document.getElementById("addMessageStep").onclick = () => window.abrirSeletorItem("messages");
         document.getElementById("addAudioStep").onclick = () => window.abrirSeletorItem("audio");
         document.getElementById("addMediaStep").onclick = () => window.abrirSeletorItem("media");
         document.getElementById("addDocumentStep").onclick = () => window.abrirSeletorItem("documents");
     };
 
-    // ---------------------
-    // SALVAR FUNIL
-    // ---------------------
     document.getElementById("saveFunnel").addEventListener("click", () => {
         const name = document.getElementById("funnelNameInput").value.trim();
         const delay = parseInt(document.getElementById("funnelDelayInput").value);
@@ -81,8 +70,8 @@ document.addEventListener("DOMContentLoaded", () => {
         funnels.push({ name, delay, steps });
         localStorage.setItem("funnels", JSON.stringify(funnels));
 
-        window.renderList("funnels"); // <-- igual ao documents
-        
+        window.renderList("funnels"); 
+
         renderFunnelsList();
         funnelModal.classList.add("hidden");
         funnelOverlay.classList.add("hidden");
@@ -107,9 +96,6 @@ document.addEventListener("DOMContentLoaded", () => {
     renderFunnelsList();
 });
 
-// ---------------------
-// ADD STEP E PREVIEW
-// ---------------------
 function addStep(type, item) {
     steps.push({ type, item });
     renderStepsPreview();
@@ -132,7 +118,6 @@ window.renderStepsPreview = function () {
             <button class="remove-step-btn">Remover</button>
         `;
 
-        // Adicionando o evento programaticamente
         stepDiv.querySelector(".remove-step-btn").addEventListener("click", () => {
             steps.splice(index, 1);
             renderStepsPreview();
@@ -147,9 +132,7 @@ window.removeStep = function (index) {
     renderStepsPreview();
 };
 
-// ---------------------
-// RENDER FUNIS
-// ---------------------
+
 function renderFunnelsList() {
     if (!funnelsList) return;
     const funnels = JSON.parse(localStorage.getItem("funnels")) || [];
@@ -161,3 +144,35 @@ function renderFunnelsList() {
         funnelsList.appendChild(li);
     });
 }
+
+window.executarFunil = async function(funnel) {
+    if (!funnel || !funnel.steps || funnel.steps.length === 0) {
+        alert("Funil vazio ou inválido!");
+        return;
+    }
+
+    for (let i = 0; i < funnel.steps.length; i++) {
+        const step = funnel.steps[i];
+        console.log(`Executando etapa ${i + 1}:`, step);
+
+        // Aqui você pode chamar as funções específicas para mensagem, audio, etc.
+        if (step.type === "messages") {
+            console.log("⚡ Enviando mensagem:", step.item.name);
+            // sua lógica de envio de mensagem
+        } else if (step.type === "audio") {
+            console.log("🎧 Enviando áudio:", step.item.name);
+            // sua lógica de envio de áudio
+        } else if (step.type === "media") {
+            console.log("🖼️ Enviando mídia:", step.item.name);
+            // sua lógica de envio de mídia
+        } else if (step.type === "documents") {
+            console.log("📄 Enviando documento:", step.item.name);
+            // sua lógica de envio de documento
+        }
+
+        // Delay entre as etapas
+        await new Promise(resolve => setTimeout(resolve, funnel.delay * 1000));
+    }
+
+    alert("✅ Funil concluído com sucesso!");
+};
