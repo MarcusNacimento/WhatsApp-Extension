@@ -35,10 +35,10 @@ document.addEventListener("DOMContentLoaded", function () {
         // Verifica se há um áudio disponível para salvar
         if (audioPlayback.src) {
             const newData = {
-                name: audioNameInput,
+                name: audioName,
                 audioBase64: audioPlayback.src,
                 timestamp: new Date().toISOString()
-            };
+              };
     
             const data = JSON.parse(localStorage.getItem("audio")) || [];
             data.push(newData);
@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
         
                 const newData = {
                     name: audioName,
-                    audioBase64,
+                    audioBase64 : audioPlayback.src,
                     timestamp: new Date().toISOString()
                 };
         

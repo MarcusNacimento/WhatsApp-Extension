@@ -87,22 +87,26 @@ document.addEventListener("DOMContentLoaded", function () {
     saveMediaButton.addEventListener("click", () => {
         const nameInput = document.getElementById("mediaNameInput");
         const mediaName = nameInput.value.trim();
-    
+
         if (!mediaName) {
             alert("⚠️ Por favor, dê um nome para a mídia antes de salvar.");
             return;
         }
 
-        const mediaElements = previewArea.querySelector("img, video source");
+        const mediaElements = previewArea.querySelector("img, video");
 
         if (!mediaElements) {
             alert("Nenhuma mídia para salvar!");
             return;
         }
 
-        // Verifica se é imagem ou vídeo
         const isImage = mediaElements.tagName.toLowerCase() === "img";
-        const src = isImage ? mediaElements.src : mediaElements.src;
+        const src = isImage ? mediaElements.src : mediaElements.querySelector("source")?.src;
+
+        if (!src) {
+            alert("Erro ao capturar a mídia.");
+            return;
+        }
 
         const newData = {
             name: mediaName,
@@ -111,10 +115,25 @@ document.addEventListener("DOMContentLoaded", function () {
             timestamp: new Date().toISOString()
         };
 
-        // Salva no localStorage
         const data = JSON.parse(localStorage.getItem("media")) || [];
         data.push(newData);
-        localStorage.setItem("media", JSON.stringify(data));
+
+        try {
+            localStorage.setItem("media", JSON.stringify(data));
+
+            // ✅ Somente executa se salvar com sucesso:
+            window.renderList("media");
+            alert("✅ Mídia salva com sucesso!");
+            fecharModalMedia();
+
+        } catch (e) {
+            if (e.name === "QuotaExceededError" || e.name === "NS_ERROR_DOM_QUOTA_REACHED") {
+                alert("❌ A mídia é muito grande para ser salva. Tente um arquivo menor (até 5MB).");
+            } else {
+                alert("❌ Erro ao salvar a mídia.");
+                console.error(e);
+            }
+        }
 
         //  Atualiza a lista ao salvar sem precisar dar F5
         window.renderList("media");
@@ -127,14 +146,14 @@ document.addEventListener("DOMContentLoaded", function () {
     window.abrirPreviewModal = function (item) {
         const modal = document.createElement("div");
         modal.className = "custom-preview-modal";
-    
+
         const overlay = document.createElement("div");
         overlay.className = "custom-overlay";
-    
+
         const content = document.createElement("div");
         content.className = "custom-preview-content";
-    
-    
+
+
         if (item.type === "image") {
             content.innerHTML = `<img src="${item.src}" style="max-width: 600px; max-height: 400px; object-fit: contain;">`;
         } else if (item.type === "video") {
@@ -144,12 +163,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 </video>
             `;
         }
-    
+
         modal.appendChild(overlay);
         modal.appendChild(content);
         document.body.appendChild(modal);
-    
+
         overlay.addEventListener("click", () => document.body.removeChild(modal));
     };
-    
+
 });

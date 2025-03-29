@@ -186,6 +186,31 @@
         </div>
 
     </div>
+
+    <div id="messageModal" class="modal hidden">
+        <div class="modal-content">
+          <h3>➕ Nova Mensagem</h3>
+          <input type="text" id="messageNameInput" placeholder="Digite o nome da mensagem">
+          <input type="text" id="messageTextInput" placeholder="Digite a mensagem">
+          <div>
+            <button id="saveMessage" class="save-btn">Salvar</button>
+            <button id="closeMessageModal" class="close-btn">Fechar</button>
+          </div>
+        </div>
+      </div>
+      <div id="messageModalOverlay" class="modal-overlay hidden"></div>
+
+    <div id="messagePreviewOverlay" class="modal-overlay hidden"></div>
+    <div id="messagePreviewModal" class="modal hidden">
+      <div class="modal-content">
+        <h3>👁 Visualizar Mensagem</h3>
+        <p><strong>Nome:</strong> <span id="previewMessageName"></span></p>
+        <p><strong>Conteúdo:</strong> <span id="previewMessageContent"></span></p>
+        <button id="fecharMensagemModal" class="close-btn">Fechar</button>
+      </div>
+    </div>
+
+    </div>
     <div id="audioModal" class="modal hidden" role="dialog" aria-labelledby="audioModalTitle" aria-hidden="true">
         <div id="audioOverlay" class="modal-overlay hidden"></div>
 
@@ -255,10 +280,11 @@
     <div id="createFunnelModal" class="modal hidden">
         <div class="modal-content">
             <h2>🧩 Criar Funil</h2>
-    
+
             <input type="text" id="funnelNameInput" placeholder="Nome do Funil" required style="margin-bottom: 10px;">
-            <input type="number" id="funnelDelayInput" placeholder="Delay entre etapas (segundos)" min="1" value="5" required style="margin-bottom: 10px;">
-    
+            <input type="number" id="funnelDelayInput" placeholder="Delay entre etapas (segundos)" min="1" value="5"
+                required style="margin-bottom: 10px;">
+
             <h4>Adicionar Itens ao Funil</h4>
             <div id="funnelItemsContainer" style="margin-bottom: 10px;">
                 <button type="button" id="addMessageStep">+ Mensagem</button>
@@ -266,21 +292,22 @@
                 <button type="button" id="addMediaStep">+ Mídia</button>
                 <button type="button" id="addDocumentStep">+ Documento</button>
             </div>
-    
-            <div id="funnelStepsContainer" style="margin-bottom: 15px; border: 1px solid #ccc; padding: 10px; border-radius: 4px; max-height: 200px; overflow-y: auto;">
+
+            <div id="funnelStepsContainer"
+                style="margin-bottom: 15px; border: 1px solid #ccc; padding: 10px; border-radius: 4px; max-height: 200px; overflow-y: auto;">
                 <p>Ainda não há etapas neste funil.</p>
             </div>
-    
+
             <div class="modal-buttons">
                 <button id="saveFunnel" class="save-btn">Criar Funil</button>
                 <button id="closeFunnelModal" class="close-btn">Fechar</button>
             </div>
         </div>
     </div>
-    
+
     <div id="createFunnelOverlay" class="modal-overlay hidden"></div>
-    
-    
+
+
     <div id="selectItemOverlay" class="modal-overlay hidden"></div>
     <div id="detailsModal" class="modal hidden">
         <div class="modal-content">
@@ -292,12 +319,30 @@
     </div>
     <div id="detailsOverlay" class="hidden"></div>
     <div id="detailsContainer" class="details-panel hidden"></div>
+
+    <div id="executarFunnelModal" class="modal hidden">
+        <div class="modal-content">
+            <h3>📤 Enviar Funil</h3>
+            <p>Digite o número com DDD para quem deseja enviar este funil:</p>
+            <input type="text" id="destinoFunnelInput" placeholder="Ex: 5599999999999"
+                style="width: 100%; margin-top: 10px; padding: 8px;">
+
+            <div style="margin-top: 15px;">
+                <button id="confirmarEnvioFunil" class="btn-primary">✅ Enviar</button>
+                <button id="cancelarEnvioFunil" class="btn-secundary">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../js/gzappy.js"></script>
     <script src="../js/logout.js"></script>
     <script src="../js/sidebar.js"></script>
     <script src="../js/audio.js"></script>
     <script src="../js/media.js"></script>
     <script src="../js/documents.js"></script>
     <script src="../js/funis.js"></script>
+    <script src="../js/messages.js"></script>
+
 
 
 

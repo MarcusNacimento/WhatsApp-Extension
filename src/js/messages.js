@@ -1,71 +1,95 @@
-document.addEventListener("DOMContentLoaded", () => {
-    renderList("messages");
+// messages.js
+let messages = [];
 
-    // Exemplo: botão de adicionar nova mensagem
-    document.getElementById("messagesButtonAddButton").addEventListener("click", () => {
-        const name = prompt("Digite o nome da mensagem:");
-        if (name) {
-            addMessage({ name });
-        }
-    });
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("messagesButtonAddButton").addEventListener("click", () => {
+    document.getElementById("messageModal").classList.remove("hidden");
+    document.getElementById("messageModalOverlay").classList.remove("hidden");
+  });
+
+  document.getElementById("saveMessage").addEventListener("click", () => {
+    const name = document.getElementById("messageNameInput").value.trim();
+    const content = document.getElementById("messageTextInput").value.trim();
+
+    if (name && content) {
+      addMessage({ name, content });
+      document.getElementById("messageNameInput").value = "";
+      document.getElementById("messageTextInput").value = "";
+      document.getElementById("messageModal").classList.add("hidden");
+      document.getElementById("messageModalOverlay").classList.add("hidden");
+    } else {
+      alert("Preencha todos os campos.");
+    }
+  });
+
+  document.getElementById("closeMessageModal").addEventListener("click", () => {
+    document.getElementById("messageModal").classList.add("hidden");
+    document.getElementById("messageModalOverlay").classList.add("hidden");
+  });
+
+  document.getElementById("fecharMensagemModal").addEventListener("click", () => {
+    document.getElementById("messagePreviewModal").classList.add("hidden");
+    document.getElementById("messagePreviewOverlay").classList.add("hidden");
+  });
 });
 
-
-window.abrirMensagemModal = function (item) {
-    const modal = document.getElementById("messagePreviewModal");
-    const overlay = document.getElementById("messagePreviewOverlay");
-    const container = document.getElementById("messagePreviewContent");
-
-    modal.classList.remove("hidden");
-    overlay.classList.remove("hidden");
-    container.innerHTML = '';
-
-    container.innerHTML = `
-        <h3>Mensagem</h3>
-        <p><strong>Nome:</strong> ${item.name || 'Sem nome'}</p>
-        <p><strong>Conteúdo:</strong> ${item.content || 'Sem conteúdo'}</p>
-        <div style="margin-top: 10px;">
-            <button id="fecharMensagemModal" class="close-btn">Fechar</button>
-        </div>
-    `;
-
-    document.getElementById("fecharMensagemModal").addEventListener("click", () => {
-        modal.classList.add("hidden");
-        overlay.classList.add("hidden");
-    });
-};
-
 function addMessage(message) {
-    const messages = JSON.parse(localStorage.getItem("messages")) || [];
-    messages.push(message);
-    localStorage.setItem("messages", JSON.stringify(messages));
-    renderList("messages");
+  const data = JSON.parse(localStorage.getItem("messages")) || [];
+  data.push(message);
+  localStorage.setItem("messages", JSON.stringify(data));
+  renderList("messages");
 }
 
 window.renderList = function (category) {
-    const listElement = document.getElementById(`${category}List`);
-    const countElement = document.getElementById(`count-${category}`);
+  const listElement = document.getElementById("itemList");
+  const countElement = document.getElementById(`count-${category}`);
 
-    if (!listElement) return;
+  if (!listElement) return;
 
-    const data = JSON.parse(localStorage.getItem(category)) || [];
-    listElement.innerHTML = "";
+  const data = JSON.parse(localStorage.getItem(category)) || [];
+  listElement.innerHTML = "";
 
-    data.forEach((item, index) => {
-        const li = document.createElement("li");
-        li.innerHTML = `
-            ${item.name || "Sem nome"}
-            <button class="remove-btn">Remover</button>
-        `;
-        li.querySelector(".remove-btn").addEventListener("click", () => {
-            data.splice(index, 1);
-            localStorage.setItem(category, JSON.stringify(data));
-            renderList(category);
-        });
-        listElement.appendChild(li);
+  data.forEach((item, index) => {
+    const listItem = document.createElement("div");
+    listItem.classList.add("list-item");
+
+    const name = document.createElement("span");
+    name.textContent = item.name || "Sem nome";
+
+    const actions = document.createElement("div");
+    actions.classList.add("item-actions");
+
+    const viewButton = document.createElement("button");
+    viewButton.textContent = "👁 Visualizar";
+    viewButton.addEventListener("click", () => window.abrirMensagemModal(item));
+
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "🗑 Remover";
+    deleteButton.addEventListener("click", () => {
+      data.splice(index, 1);
+      localStorage.setItem(category, JSON.stringify(data));
+      renderList(category);
     });
 
-    if (countElement) {
-        countElement.textContent = data.length;
-    }
+    actions.appendChild(viewButton);
+    actions.appendChild(deleteButton);
+    listItem.appendChild(name);
+    listItem.appendChild(actions);
+    listElement.appendChild(listItem);
+  });
+
+  if (countElement) {
+    countElement.textContent = data.length;
+  }
+};
+
+window.abrirMensagemModal = function (item) {
+  const nome = item?.name || "";
+  const conteudo = item?.content || "";
+
+  document.getElementById("previewMessageName").textContent = nome;
+  document.getElementById("previewMessageContent").textContent = conteudo;
+
+  document.getElementById("messagePreviewModal").classList.remove("hidden");
+  document.getElementById("messagePreviewOverlay").classList.remove("hidden");
 };

@@ -37,7 +37,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
-
     window.openDetailsModal = function (item, category) {
         const detailsContainer = document.getElementById("detailsContainer");
 
@@ -47,16 +46,29 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         detailsContainer.innerHTML = `
-            <h3>${item.name}</h3>
-            <p>Data: ${new Date(item.timestamp).toLocaleString()}</p>
-            <p>Categoria: ${category}</p>
+          <h3>${item.name}</h3>
+          <p>Data: ${item.timestamp ? new Date(item.timestamp).toLocaleString() : "Sem data"}</p>
+          <p>Categoria: ${category}</p>
         `;
 
-        // ✅ Usa uma classe específica para exibição
         detailsContainer.classList.remove("hidden");
         detailsContainer.classList.add("visible");
-        detailsContainer.style.display = "block"; // Garante que ele seja mostrado
+        detailsContainer.style.display = "block";
+
+        // ✅ Ouve clique fora apenas uma vez
+        setTimeout(() => {
+            document.addEventListener(
+                "click",
+                function handleClickOutside(event) {
+                    if (!detailsContainer.contains(event.target)) {
+                        closeDetailsModal();
+                    }
+                },
+                { once: true }
+            );
+        }, 10); // espera o modal abrir antes de ativar o ouvinte
     };
+
 
     function closeDetailsModal() {
         let detailsContainer = document.getElementById("detailsContainer");
@@ -119,12 +131,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
             if (category === "messages") {
-                const messageBox = document.createElement("div");
+                const messageBox = document.createElement("span");
                 messageBox.classList.add("message-box");
-                messageBox.textContent = item.content || "Mensagem sem conteúdo";
                 listItem.appendChild(messageBox);
+
+                const viewButton = document.createElement("button");
+                viewButton.textContent = "👁 Visualizar";
+                viewButton.addEventListener("click", () => {
+                    window.abrirMensagemModal(item);
+                });
+
+                listItem.appendChild(viewButton);
             }
-            
+
             else if (category === "media" && item.src) {
                 const mediaIcon = document.createElement("span");
                 mediaIcon.textContent = item.type === "image" ? "📷 Imagem" : "🎥 Vídeo";
@@ -146,28 +165,28 @@ document.addEventListener("DOMContentLoaded", function () {
             else if (category === "documents" && item.fileBase64) {
                 const docIcon = document.createElement("span");
                 docIcon.textContent = "📄 Documento";
-            
+
                 const docName = document.createElement("strong");
                 docName.textContent = ` ${item.name || "Sem Nome"}`;
-            
+
                 const viewButton = document.createElement("button");
                 viewButton.textContent = "📄 Visualizar";
                 viewButton.style.marginLeft = "10px";
-            
+
                 viewButton.addEventListener("click", (e) => {
                     e.stopPropagation();
                     abrirDocumentoModal(item);
                 });
-            
+
                 const downloadButton = document.createElement("button");
                 downloadButton.textContent = "⬇️ Baixar";
                 downloadButton.style.marginLeft = "10px";
-            
+
                 downloadButton.addEventListener("click", (e) => {
                     e.stopPropagation();
                     baixarDocumento(item);
                 });
-            
+
                 listItem.appendChild(viewButton);
                 listItem.appendChild(downloadButton);
             }
@@ -175,28 +194,33 @@ document.addEventListener("DOMContentLoaded", function () {
             else if (category === "funnels" && item.steps) {
                 const funnelIcon = document.createElement("span");
                 funnelIcon.textContent = "🧩 Funil";
-            
+
                 const funilName = document.createElement("strong");
                 funilName.textContent = ` ${item.name}`;
-            
+
                 const stepsCount = document.createElement("span");
                 stepsCount.textContent = ` (${item.steps.length} etapas)`;
-            
+
                 const startButton = document.createElement("button");
-                startButton.textContent = "▶️ Iniciar Funil";
+                startButton.textContent = "▶️ Executar Funil";
+                startButton.classList.add("btn-primary");
                 startButton.style.marginLeft = "10px";
-            
+
+                // Agora chama a modal personalizada
                 startButton.addEventListener("click", () => {
-                    executarFunil(item);
+                    const modal = document.getElementById("executarFunnelModal");
+                    document.getElementById("destinoFunnelInput").value = ""; // limpa campo
+                    window.funilSelecionado = item;
+                    modal.classList.remove("hidden");
                 });
-            
+
                 listItem.appendChild(funnelIcon);
                 listItem.appendChild(funilName);
                 listItem.appendChild(stepsCount);
                 listItem.appendChild(startButton);
             }
-
-            listItem.addEventListener("click", function () {
+            listItem.addEventListener("click", function (e) {
+                e.stopPropagation(); // ⬅️ impede o clique de fechar o modal
                 window.openDetailsModal(item, category);
             });
 
@@ -386,7 +410,6 @@ document.addEventListener("DOMContentLoaded", function () {
             event.stopPropagation();
 
             if (button.id === "messagesButtonAddButton") {
-                abrirMensagemModal();
             }
             else if (button.id === "audioButtonAddButton") {
                 abrirModalAudio();
@@ -394,10 +417,10 @@ document.addEventListener("DOMContentLoaded", function () {
             else if (button.id === "mediaButtonAddButton") {
                 abrirModalMedia();
             }
-            else if(button.id === "documentsButtonAddButton"){
+            else if (button.id === "documentsButtonAddButton") {
                 abrirModalDocumento();
             }
-            else if (button.id === "funnelsButtonAddButton"){
+            else if (button.id === "funnelsButtonAddButton") {
                 abrirModalFunil();
             }
 
@@ -471,4 +494,78 @@ document.addEventListener("DOMContentLoaded", function () {
         addButton.addEventListener("click", function () {
         });
     }
+});
+
+function validarRespostaGzappy(resposta) {
+    return (
+        resposta &&
+        (
+            resposta.status === "success" ||
+            (typeof resposta.msg === "string" && resposta.msg.toLowerCase().includes("sent"))
+        )
+    );
+}
+
+
+document.getElementById("confirmarEnvioFunil")?.addEventListener("click", async () => {
+    const numero = document.getElementById("destinoFunnelInput").value;
+    const modal = document.getElementById("executarFunnelModal");
+
+    if (!numero || !numero.startsWith("55")) {
+        alert("Número inválido.");
+        return;
+    }
+
+    const funnel = window.funilSelecionado;
+    if (!funnel || !funnel.steps) {
+        alert("Funil inválido.");
+        return;
+    }
+
+    for (let i = 0; i < funnel.steps.length; i++) {
+        const step = funnel.steps[i];
+        const tipo = step?.type === "messages" ? "mensagem"
+            : step?.type === "audio" ? "audio"
+                : step?.type === "media" ? "midia"
+                    : step?.type === "documents" ? "documento"
+                        : step?.type;
+
+        let conteudo = "";
+
+        if (step?.type === "messages") {
+            conteudo = step?.item?.content || step?.item?.name || "";
+        } else if (step?.type === "audio") {
+            conteudo = step?.item?.audioBase64 || "";
+        } else if (step?.type === "documents") {
+            conteudo = step?.item?.fileBase64 || "";
+        } else if (step?.type === "media") {
+            conteudo = step?.item?.src || "";
+
+            const base64Length = conteudo.length - (conteudo.indexOf(',') + 1);
+            const fileSizeInBytes = (base64Length * 3) / 4;
+            const maxSize = 5 * 1024 * 1024;
+            if (fileSizeInBytes > maxSize) {
+                alert(`❌ A mídia da etapa ${i + 1} excede 5MB e não será enviada.`);
+                continue;
+            }
+        }
+
+        if (!tipo || !conteudo) {
+            console.warn("Etapa inválida no sidebar:", step);
+            return;
+        }
+
+        const resposta = await window.gzappy.enviarEtapa(numero, { tipo, conteudo });
+        console.log(`Etapa ${i + 1}:`, resposta);
+
+        if (!validarRespostaGzappy(resposta)) {
+            alert(`Erro ao enviar a etapa ${i + 1}`);
+            break;
+        }
+
+        await new Promise(resolve => setTimeout(resolve, funnel.delay * 1000));
+    }
+
+    alert("✅ Funil executado com sucesso!");
+    modal.classList.add("hidden");
 });
