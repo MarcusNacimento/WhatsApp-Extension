@@ -83,152 +83,195 @@ document.addEventListener("DOMContentLoaded", function () {
 
     window.renderList = function (category) {
         const itemList = document.getElementById("itemList");
-
+    
         itemList.style.maxHeight = "600px";
         itemList.style.overflowY = "auto";
         itemList.style.padding = "10px";
         itemList.innerHTML = "";
-
-        const data = JSON.parse(localStorage.getItem(category)) || [];
-
-        if (data.length === 0) {
-            itemList.innerHTML = "<p style='text-align: center;'>Nenhum item adicionado ainda.</p>";
-            return;
-        }
-
-        data.forEach((item, index) => {
-            const listItem = document.createElement("div");
-            listItem.classList.add("list-item");
-
-            const itemName = document.createElement("span");
-            itemName.classList.add("item-name");
-            itemName.textContent = item.name;
-
-            const itemActions = document.createElement("div");
-            itemActions.classList.add("item-actions");
-
-            const editButton = document.createElement("button");
-            editButton.classList.add("edit-btn");
-            editButton.textContent = "Editar";
-            editButton.addEventListener("click", (e) => {
-                e.stopPropagation();
-                openEditModal(category, index, item.name);
-            });
-
-            const deleteButton = document.createElement("button");
-            deleteButton.classList.add("delete-btn");
-            deleteButton.textContent = "Deletar";
-            deleteButton.addEventListener("click", (e) => {
-                e.stopPropagation();
-                deleteItem(category, index);
-            });
-
-            listItem.appendChild(itemName);
-            itemActions.appendChild(editButton);
-            itemActions.appendChild(deleteButton);
-            listItem.appendChild(itemActions);
-            console.log(category);
-
-
-            if (category === "messages") {
-                const messageBox = document.createElement("span");
-                messageBox.classList.add("message-box");
-                listItem.appendChild(messageBox);
-
-                const viewButton = document.createElement("button");
-                viewButton.textContent = "👁 Visualizar";
-                viewButton.addEventListener("click", () => {
-                    window.abrirMensagemModal(item);
-                });
-
-                listItem.appendChild(viewButton);
+    
+        chrome.storage.local.get([category], (result) => {
+            const data = result[category] || [];
+    
+            if (data.length === 0) {
+                itemList.innerHTML = "<p style='text-align: center;'>Nenhum item adicionado ainda.</p>";
+                return;
             }
-
-            else if (category === "media" && item.src) {
-                const mediaIcon = document.createElement("span");
-                mediaIcon.textContent = item.type === "image" ? "📷 Imagem" : "🎥 Vídeo";
-
-                const viewButton = document.createElement("button");
-                viewButton.textContent = "👁 Ver mídia";
-                viewButton.style.marginLeft = "10px";
-
-                viewButton.addEventListener("click", (e) => {
+    
+            data.forEach((item, index) => {
+                const listItem = document.createElement("div");
+                listItem.classList.add("list-item");
+    
+                const itemName = document.createElement("span");
+                itemName.classList.add("item-name");
+                itemName.textContent = item.name;
+    
+                const itemActions = document.createElement("div");
+                itemActions.classList.add("item-actions");
+    
+                const editButton = document.createElement("button");
+                editButton.classList.add("edit-btn");
+                editButton.textContent = "Editar";
+                editButton.addEventListener("click", (e) => {
                     e.stopPropagation();
-                    abrirPreviewModal(item);
+                    openEditModal(category, index, item.name);
                 });
-
-                listItem.appendChild(mediaIcon);
-                listItem.appendChild(viewButton);
-
-            }
-
-            else if (category === "documents" && item.fileBase64) {
-                const docIcon = document.createElement("span");
-                docIcon.textContent = "📄 Documento";
-
-                const docName = document.createElement("strong");
-                docName.textContent = ` ${item.name || "Sem Nome"}`;
-
-                const viewButton = document.createElement("button");
-                viewButton.textContent = "📄 Visualizar";
-                viewButton.style.marginLeft = "10px";
-
-                viewButton.addEventListener("click", (e) => {
+    
+                const deleteButton = document.createElement("button");
+                deleteButton.classList.add("delete-btn");
+                deleteButton.textContent = "Deletar";
+                deleteButton.addEventListener("click", (e) => {
                     e.stopPropagation();
-                    abrirDocumentoModal(item);
+    
+                    data.splice(index, 1);
+                    chrome.storage.local.set({ [category]: data }, () => {
+                        renderList(category);
+                    });
                 });
-
-                const downloadButton = document.createElement("button");
-                downloadButton.textContent = "⬇️ Baixar";
-                downloadButton.style.marginLeft = "10px";
-
-                downloadButton.addEventListener("click", (e) => {
+    
+                listItem.appendChild(itemName);
+                itemActions.appendChild(editButton);
+                itemActions.appendChild(deleteButton);
+                listItem.appendChild(itemActions);
+                console.log(category);
+    
+                if (category === "messages") {
+                    const messageBox = document.createElement("span");
+                    messageBox.classList.add("message-box");
+                    listItem.appendChild(messageBox);
+    
+                    const viewButton = document.createElement("button");
+                    viewButton.textContent = "👁 Visualizar";
+                    viewButton.addEventListener("click", () => {
+                        window.abrirMensagemModal(item);
+                    });
+    
+                    listItem.appendChild(viewButton);
+                }
+                
+                else if (category === "audio" && item.audioBase64) {
+                    const audioIcon = document.createElement("span");
+                    audioIcon.textContent = "🎧 Áudio";
+                  
+                    const audioPlayer = document.createElement("audio");
+                    audioPlayer.controls = true;
+                    audioPlayer.src = item.audioBase64;
+                    audioPlayer.style.display = "block";
+                    audioPlayer.style.marginTop = "8px";
+                  
+                    const downloadButton = document.createElement("button");
+                    downloadButton.textContent = "⬇️ Baixar";
+                    downloadButton.style.marginLeft = "10px";
+                    downloadButton.addEventListener("click", (e) => {
+                      e.stopPropagation();
+                      const a = document.createElement("a");
+                      a.href = item.audioBase64;
+                      a.download = item.name || "audio.webm";
+                      a.click();
+                    });
+                  
+                    const favoriteButton = document.createElement("button");
+                    favoriteButton.textContent = item.isFavorite ? "⭐ Desfavoritar" : "☆ Favoritar";
+                    favoriteButton.style.marginLeft = "10px";
+                    favoriteButton.addEventListener("click", (e) => {
+                      e.stopPropagation();
+                      item.isFavorite = !item.isFavorite;
+                      chrome.storage.local.get(["audio"], (res) => {
+                        const lista = res.audio || [];
+                        lista[index] = item;
+                        chrome.storage.local.set({ audio: lista }, () => renderList(category));
+                      });
+                    });
+                  
+                    listItem.appendChild(audioIcon);
+                    listItem.appendChild(audioPlayer);
+                    listItem.appendChild(downloadButton);
+                    listItem.appendChild(favoriteButton);
+                  }
+                  
+    
+                else if (category === "media" && item.src) {
+                    const mediaIcon = document.createElement("span");
+                    mediaIcon.textContent = item.type === "image" ? "📷 Imagem" : "🎥 Vídeo";
+    
+                    const viewButton = document.createElement("button");
+                    viewButton.textContent = "👁 Ver mídia";
+                    viewButton.style.marginLeft = "10px";
+    
+                    viewButton.addEventListener("click", (e) => {
+                        e.stopPropagation();
+                        abrirPreviewModal(item);
+                    });
+    
+                    listItem.appendChild(mediaIcon);
+                    listItem.appendChild(viewButton);
+                }
+    
+                else if (category === "documents" && item.fileBase64) {
+                    const docIcon = document.createElement("span");
+                    docIcon.textContent = "📄 Documento";
+    
+                    const docName = document.createElement("strong");
+                    docName.textContent = ` ${item.name || "Sem Nome"}`;
+    
+                    const viewButton = document.createElement("button");
+                    viewButton.textContent = "📄 Visualizar";
+                    viewButton.style.marginLeft = "10px";
+    
+                    viewButton.addEventListener("click", (e) => {
+                        e.stopPropagation();
+                        abrirDocumentoModal(item);
+                    });
+    
+                    const downloadButton = document.createElement("button");
+                    downloadButton.textContent = "⬇️ Baixar";
+                    downloadButton.style.marginLeft = "10px";
+    
+                    downloadButton.addEventListener("click", (e) => {
+                        e.stopPropagation();
+                        baixarDocumento(item);
+                    });
+    
+                    listItem.appendChild(viewButton);
+                    listItem.appendChild(downloadButton);
+                }
+    
+                else if (category === "funnels" && item.steps) {
+                    const funnelIcon = document.createElement("span");
+                    funnelIcon.textContent = "🧩 Funil";
+    
+                    const funilName = document.createElement("strong");
+                    funilName.textContent = ` ${item.name}`;
+    
+                    const stepsCount = document.createElement("span");
+                    stepsCount.textContent = ` (${item.steps.length} etapas)`;
+    
+                    const startButton = document.createElement("button");
+                    startButton.textContent = "▶️ Executar Funil";
+                    startButton.classList.add("btn-primary");
+                    startButton.style.marginLeft = "10px";
+    
+                    startButton.addEventListener("click", () => {
+                        const modal = document.getElementById("executarFunnelModal");
+                        document.getElementById("destinoFunnelInput").value = "";
+                        window.funilSelecionado = item;
+                        modal.classList.remove("hidden");
+                    });
+    
+                    listItem.appendChild(funnelIcon);
+                    listItem.appendChild(funilName);
+                    listItem.appendChild(stepsCount);
+                }
+    
+                listItem.addEventListener("click", function (e) {
                     e.stopPropagation();
-                    baixarDocumento(item);
+                    window.openDetailsModal(item, category);
                 });
-
-                listItem.appendChild(viewButton);
-                listItem.appendChild(downloadButton);
-            }
-
-            else if (category === "funnels" && item.steps) {
-                const funnelIcon = document.createElement("span");
-                funnelIcon.textContent = "🧩 Funil";
-
-                const funilName = document.createElement("strong");
-                funilName.textContent = ` ${item.name}`;
-
-                const stepsCount = document.createElement("span");
-                stepsCount.textContent = ` (${item.steps.length} etapas)`;
-
-                const startButton = document.createElement("button");
-                startButton.textContent = "▶️ Executar Funil";
-                startButton.classList.add("btn-primary");
-                startButton.style.marginLeft = "10px";
-
-                // Agora chama a modal personalizada
-                startButton.addEventListener("click", () => {
-                    const modal = document.getElementById("executarFunnelModal");
-                    document.getElementById("destinoFunnelInput").value = ""; // limpa campo
-                    window.funilSelecionado = item;
-                    modal.classList.remove("hidden");
-                });
-
-                listItem.appendChild(funnelIcon);
-                listItem.appendChild(funilName);
-                listItem.appendChild(stepsCount);
-                listItem.appendChild(startButton);
-            }
-            listItem.addEventListener("click", function (e) {
-                e.stopPropagation(); // ⬅️ impede o clique de fechar o modal
-                window.openDetailsModal(item, category);
+    
+                itemList.appendChild(listItem);
             });
-
-
-            itemList.appendChild(listItem);
         });
-    }
-
+    };
+    
     const addForm = document.getElementById("addForm");
     addForm.addEventListener("submit", function (event) {
         event.preventDefault();
@@ -435,7 +478,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function updateCategoryCounts() {
     const categories = {
-        chat: "count-messages",
+        messages: "count-messages",
         audio: "count-audio",
         media: "count-media",
         documents: "count-documents",
@@ -443,13 +486,14 @@ function updateCategoryCounts() {
         triggers: "count-triggers"
     };
 
-    Object.keys(categories).forEach(category => {
-        const data = JSON.parse(localStorage.getItem(category)) || [];
-        const countElement = document.getElementById(categories[category]);
-
-        if (countElement) {
-            countElement.textContent = data.length;
-        }
+    chrome.storage.local.get(Object.keys(categories), (result) => {
+        Object.entries(categories).forEach(([category, countId]) => {
+            const countElement = document.getElementById(countId);
+            if (countElement) {
+                const data = result[category] || [];
+                countElement.textContent = data.length;
+            }
+        });
     });
 }
 
@@ -475,14 +519,22 @@ document.getElementById("filterInput").addEventListener("input", function () {
 
 document.addEventListener("DOMContentLoaded", function () {
     const usernameElement = document.getElementById("username");
-    const cellnumberElement = document.getElementById("cellnumberInput");
-
+    const cellNumberElement = document.getElementById("cellnumber");
+  
     if (usernameElement) {
-        const savedUsername = localStorage.getItem("username") || "Usuário"; // Nome salvo ou padrão "Usuário"
-        usernameElement.textContent = `Olá, ${savedUsername}!`;
+      const savedUsername = localStorage.getItem("username") || "Usuário";
+      usernameElement.textContent = `Olá, ${savedUsername}!`;
     }
-});
-
+  
+    if (cellNumberElement) {
+      const number = localStorage.getItem("telefone");
+      if (number) {
+        cellNumberElement.innerText = number;
+      } else {
+        console.log("Número de telefone não encontrado no localStorage.");
+      }
+    }
+  });
 
 
 

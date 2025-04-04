@@ -1,13 +1,14 @@
-
-import { enviarMensagem } from "./gzappy.js";
-
 document.addEventListener("DOMContentLoaded", function () {
+  // Verifica se já está logado
+  const username = localStorage.getItem("username");
+  const telefone = localStorage.getItem("telefone");
+
+  if (username && telefone) {
+    window.location.href = "sidebar.html";
+    return;
+  }
+
   const cellInput = document.getElementById("cellnumberInput");
-  const loginForm = document.getElementById("loginForm");
-  const qrContainer = document.getElementById("qrContainer");
-  const qrIframe = document.getElementById("qrIframe");
-  const qrStatus = document.getElementById("qrStatus");
-  const proceedBtn = document.getElementById("proceedBtn");
 
   if (cellInput) {
     cellInput.addEventListener("input", function () {
@@ -21,36 +22,19 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  if (loginForm) {
-    loginForm.addEventListener("submit", async function (e) {
-      e.preventDefault();
-      const enteredKey = document.getElementById("accessKey").value.trim();
-      const enteredName = document.getElementById("usernameInput").value.trim();
-      const enteredCell = document.getElementById("cellnumberInput").value.replace(/\D/g, "").trim();
+  document.getElementById("loginForm").addEventListener("submit", function (e) {
+    e.preventDefault();
 
-      if (enteredKey === "Teste") {
-        localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("username", enteredName || "Usuário");
-        localStorage.setItem("telefoneVinculado", enteredCell);
+    const username = document.getElementById("usernameInput").value.trim();
+    const telefone = document.getElementById("cellnumberInput").value.trim();
+    const senha = document.getElementById("accessKey").value.trim();
 
-        loginForm.reset();
-        loginForm.classList.add("hidden");
-
-        qrContainer.classList.remove("hidden");
-        qrStatus.classList.remove("hidden");
-
-        const qr = await window.gzappy.gerarQRCode();
-        qrIframe.src = qr;
-        qrStatus.innerHTML = "<span class='spinner'></span> Acesse e escaneie o QR Code da dashboard.";
-      } else {
-        alert("❌ Chave incorreta! Tente novamente.");
-      }
-    });
-  }
-
-  if (proceedBtn) {
-    proceedBtn.addEventListener("click", () => {
+    if (senha === "Teste") {
+      localStorage.setItem("username", username);
+      localStorage.setItem("telefone", telefone);
       window.location.href = "sidebar.html";
-    });
-  }
+    } else {
+      alert("❌ Senha incorreta. Tente novamente.");
+    }
+  });
 });

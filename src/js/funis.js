@@ -17,40 +17,42 @@ document.addEventListener("DOMContentLoaded", () => {
   steps = [];
 
   window.abrirSeletorItem = function (category) {
-    const data = JSON.parse(localStorage.getItem(category)) || [];
-    const overlay = document.getElementById("selectItemOverlay");
-    overlay.classList.remove("hidden");
-    overlay.innerHTML = "";
+    chrome.storage.local.get([category], (res) => {
+      const data = res[category] || [];
+      const overlay = document.getElementById("selectItemOverlay");
+      overlay.classList.remove("hidden");
+      overlay.innerHTML = "";
 
-    const modal = document.createElement("div");
-    modal.classList.add("seletor-modal");
-    modal.innerHTML = `<h3>Selecionar ${category}</h3>`;
+      const modal = document.createElement("div");
+      modal.classList.add("seletor-modal");
+      modal.innerHTML = `<h3>Selecionar ${category}</h3>`;
 
-    data.forEach((item) => {
-      const itemDiv = document.createElement("div");
-      itemDiv.classList.add("seletor-item");
-      itemDiv.innerHTML = `
-        <span>${item.name || "Sem nome"}</span>
-        <button>Selecionar</button>
-      `;
-      itemDiv.querySelector("button").addEventListener("click", () => {
-        addStep(category, item);
+      data.forEach((item) => {
+        const itemDiv = document.createElement("div");
+        itemDiv.classList.add("seletor-item");
+        itemDiv.innerHTML = `
+          <span>${item.name || "Sem nome"}</span>
+          <button>Selecionar</button>
+        `;
+        itemDiv.querySelector("button").addEventListener("click", () => {
+          addStep(category, item);
+          overlay.classList.add("hidden");
+          overlay.innerHTML = "";
+        });
+        modal.appendChild(itemDiv);
+      });
+
+      const closeBtn = document.createElement("button");
+      closeBtn.textContent = "Fechar";
+      closeBtn.style.marginTop = "10px";
+      closeBtn.addEventListener("click", () => {
         overlay.classList.add("hidden");
         overlay.innerHTML = "";
       });
-      modal.appendChild(itemDiv);
-    });
 
-    const closeBtn = document.createElement("button");
-    closeBtn.textContent = "Fechar";
-    closeBtn.style.marginTop = "10px";
-    closeBtn.addEventListener("click", () => {
-      overlay.classList.add("hidden");
-      overlay.innerHTML = "";
+      modal.appendChild(closeBtn);
+      overlay.appendChild(modal);
     });
-
-    modal.appendChild(closeBtn);
-    overlay.appendChild(modal);
   };
 
   window.abrirModalFunil = function () {
@@ -74,16 +76,21 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const funnels = JSON.parse(localStorage.getItem("funnels")) || [];
-    funnels.push({ name, delay, steps });
-    localStorage.setItem("funnels", JSON.stringify(funnels));
+    chrome.storage.local.get(["funnels"], (result) => {
+      const funnels = result.funnels || [];
+      funnels.push({ name, delay, steps });
 
-    window.renderList("funnels");
-    renderFunnelsList();
-    funnelModal.classList.add("hidden");
-    funnelOverlay.classList.add("hidden");
-    steps = [];
-    renderStepsPreview();
+      chrome.storage.local.set({ funnels }, () => {
+        console.log("✅ Funil salvo no chrome.storage");
+        window.funnelsFromStorage = funnels; // Torna visível para o inject
+        window.renderList("funnels");
+        renderFunnelsList();
+        funnelModal.classList.add("hidden");
+        funnelOverlay.classList.add("hidden");
+        steps = [];
+        renderStepsPreview();
+      });
+    });
   });
 
   document.getElementById("closeFunnelModal").addEventListener("click", () => {
@@ -141,83 +148,30 @@ window.removeStep = function (index) {
 
 function renderFunnelsList() {
   if (!funnelsList) return;
-  const funnels = JSON.parse(localStorage.getItem("funnels")) || [];
-  funnelsList.innerHTML = "";
 
-  funnels.forEach((funnel) => {
-    const li = document.createElement("li");
-    li.innerHTML = `
-      <strong>${funnel.name}</strong> - Delay: ${funnel.delay}s - Etapas: ${funnel.steps.length}
-      <button style="margin-left: 10px;" onclick='executarFunil(${JSON.stringify(funnel)})'>Executar</button>
-    `;
-    funnelsList.appendChild(li);
+  chrome.storage.local.get(["funnels"], (result) => {
+    const funnels = result.funnels || [];
+
+    // 🔁 ATUALIZA o window para o inject acessar
+    window.funnelsFromStorage = funnels;
+
+    funnelsList.innerHTML = "";
+
+    funnels.forEach((funnel) => {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <strong>${funnel.name}</strong> - Delay: ${funnel.delay}s - Etapas: ${funnel.steps.length}
+        <button style="margin-left: 10px;" onclick='executarFunil(${JSON.stringify(funnel)})'>Executar</button>
+      `;
+      funnelsList.appendChild(li);
+    });
   });
 }
 
-window.executarFunil = async function (funnel) {
-  if (!funnel || !funnel.steps || funnel.steps.length === 0) {
-    alert("Funil vazio ou inválido!");
-    return;
+window.executarFunil = function (funnel) {
+  if (typeof window._executarFunilInject === "function") {
+    window._executarFunilInject(funnel);
+  } else {
+    alert("❌ A função de envio automático ainda não foi carregada.");
   }
-
-  const numero = prompt("Digite o número com DDI (ex: 5599999999999):");
-  if (!numero || !numero.startsWith("55")) {
-    alert("Número inválido.");
-    return;
-  }
-
-  for (let i = 0; i < funnel.steps.length; i++) {
-    const step = funnel.steps[i];
-    const tipo = step?.type === "messages" ? "mensagem"
-                : step?.type === "audio" ? "audio"
-                : step?.type === "media" ? "midia"
-                : step?.type === "documents" ? "documento"
-                : step?.type;
-
-    let conteudo = "";
-
-    if (step?.type === "messages") {
-      conteudo = step?.item?.content || step?.item?.name || "";
-    } else if (step?.type === "audio") {
-      conteudo = step?.item?.audioBase64 || "";
-    } else if (step?.type === "documents") {
-      conteudo = step?.item?.fileBase64 || "";
-    } else if (step?.type === "media") {
-      conteudo = step?.item?.src || "";
-
-      // ✅ Verifica se a mídia é maior que 5MB
-      const base64Length = conteudo.length - (conteudo.indexOf(',') + 1);
-      const fileSizeInBytes = (base64Length * 3) / 4;
-      const maxSize = 5 * 1024 * 1024; // 5MB
-      if (fileSizeInBytes > maxSize) {
-        alert(`❌ A mídia da etapa ${i + 1} excede o limite de 5MB e não será enviada.`);
-        continue;
-      }
-    }
-
-    if (!tipo || !conteudo) {
-      console.warn(`🚫 Etapa inválida na posição ${i + 1}:`, step);
-      continue;
-    }
-
-    const etapa = {
-      tipo,
-      conteudo,
-      delay: funnel.delay * 1000
-    };
-
-    console.log(`➡️ Etapa ${i + 1} montada para envio:`, etapa);
-
-    const resposta = await window.gzappy.enviarEtapa(numero, etapa);
-    console.log(`✅ Resposta da etapa ${i + 1}:`, resposta);
-
-    if (!validarRespostaGzappy(resposta)) {
-      alert(`Erro ao enviar a etapa ${i + 1}`);
-      break;
-    }
-
-    await new Promise(resolve => setTimeout(resolve, funnel.delay * 1000));
-  }
-
-  alert("✅ Funil concluído com sucesso!");
 };

@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="../css/media.css">
     <link rel="stylesheet" href="../css/documents.css">
     <link rel="stylesheet" href="../css/funis.css">
+    <link rel="stylesheet" href="../css/message.css">
+
 
 
 
@@ -113,7 +115,7 @@
     <header class="header">
         <div class="user-info">
             <span id="username">Olá, Usuário!</span>
-            <span id="cellnumberInput">55999686600</span>
+            <span id="cellnumber"></span>
             <img src="../../assets/img/user-avatar.png" alt="Usuário" class="user-avatar">
         </div>
     </header>
@@ -189,17 +191,21 @@
 
     <div id="messageModal" class="modal hidden">
         <div class="modal-content">
-          <h3>➕ Nova Mensagem</h3>
-          <input type="text" id="messageNameInput" placeholder="Digite o nome da mensagem">
-          <input type="text" id="messageTextInput" placeholder="Digite a mensagem">
-          <div>
-            <button id="saveMessage" class="save-btn">Salvar</button>
-            <button id="closeMessageModal" class="close-btn">Fechar</button>
+          <div class="modal-header">
+            <h2>➕ Nova Mensagem</h2>
+            <button id="closeMessageModal" class="close-btn">✖</button>
+          </div>
+          <div class="modal-body">
+            <input type="text" id="messageNameInput" placeholder="Nome da Mensagem" />
+            <textarea id="messageTextInput" placeholder="Digite sua mensagem..."></textarea>
+          </div>
+          <div class="modal-footer">
+            <button id="saveMessage" class="save-btn">💾 Salvar</button>
           </div>
         </div>
       </div>
       <div id="messageModalOverlay" class="modal-overlay hidden"></div>
-
+      
     <div id="messagePreviewOverlay" class="modal-overlay hidden"></div>
     <div id="messagePreviewModal" class="modal hidden">
       <div class="modal-content">
@@ -334,7 +340,6 @@
         </div>
     </div>
 
-    <script type="module" src="../js/gzappy.js"></script>
     <script src="../js/logout.js"></script>
     <script src="../js/sidebar.js"></script>
     <script src="../js/audio.js"></script>

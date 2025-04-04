@@ -1,4 +1,3 @@
-// messages.js
 let messages = [];
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -31,57 +30,20 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("messagePreviewModal").classList.add("hidden");
     document.getElementById("messagePreviewOverlay").classList.add("hidden");
   });
+
 });
 
 function addMessage(message) {
-  const data = JSON.parse(localStorage.getItem("messages")) || [];
-  data.push(message);
-  localStorage.setItem("messages", JSON.stringify(data));
-  renderList("messages");
+  chrome.storage.local.get(["messages"], (result) => {
+    const data = result.messages || [];
+    data.push(message);
+    chrome.storage.local.set({ messages: data }, () => {
+      renderList("messages");
+    });
+  });
 }
 
-window.renderList = function (category) {
-  const listElement = document.getElementById("itemList");
-  const countElement = document.getElementById(`count-${category}`);
 
-  if (!listElement) return;
-
-  const data = JSON.parse(localStorage.getItem(category)) || [];
-  listElement.innerHTML = "";
-
-  data.forEach((item, index) => {
-    const listItem = document.createElement("div");
-    listItem.classList.add("list-item");
-
-    const name = document.createElement("span");
-    name.textContent = item.name || "Sem nome";
-
-    const actions = document.createElement("div");
-    actions.classList.add("item-actions");
-
-    const viewButton = document.createElement("button");
-    viewButton.textContent = "👁 Visualizar";
-    viewButton.addEventListener("click", () => window.abrirMensagemModal(item));
-
-    const deleteButton = document.createElement("button");
-    deleteButton.textContent = "🗑 Remover";
-    deleteButton.addEventListener("click", () => {
-      data.splice(index, 1);
-      localStorage.setItem(category, JSON.stringify(data));
-      renderList(category);
-    });
-
-    actions.appendChild(viewButton);
-    actions.appendChild(deleteButton);
-    listItem.appendChild(name);
-    listItem.appendChild(actions);
-    listElement.appendChild(listItem);
-  });
-
-  if (countElement) {
-    countElement.textContent = data.length;
-  }
-};
 
 window.abrirMensagemModal = function (item) {
   const nome = item?.name || "";
