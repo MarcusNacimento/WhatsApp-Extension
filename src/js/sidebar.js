@@ -548,16 +548,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-function validarRespostaGzappy(resposta) {
-    return (
-        resposta &&
-        (
-            resposta.status === "success" ||
-            (typeof resposta.msg === "string" && resposta.msg.toLowerCase().includes("sent"))
-        )
-    );
-}
-
 
 document.getElementById("confirmarEnvioFunil")?.addEventListener("click", async () => {
     const numero = document.getElementById("destinoFunnelInput").value;
@@ -605,14 +595,6 @@ document.getElementById("confirmarEnvioFunil")?.addEventListener("click", async 
         if (!tipo || !conteudo) {
             console.warn("Etapa inválida no sidebar:", step);
             return;
-        }
-
-        const resposta = await window.gzappy.enviarEtapa(numero, { tipo, conteudo });
-        console.log(`Etapa ${i + 1}:`, resposta);
-
-        if (!validarRespostaGzappy(resposta)) {
-            alert(`Erro ao enviar a etapa ${i + 1}`);
-            break;
         }
 
         await new Promise(resolve => setTimeout(resolve, funnel.delay * 1000));
